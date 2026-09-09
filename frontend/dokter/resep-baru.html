@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tulis Resep Baru — SisFarmasi</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></div>
+      <div class="logo-text"><span>SisFarmasi</span><span>SatuSehat</span></div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar">?</div>
+      <div class="user-info">
+        <span id="sidebar-user-name">Loading...</span>
+        <span id="sidebar-user-role">Dokter</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="dashboard.html"     class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span> Dashboard</a>
+      <a href="resep-baru.html"    class="nav-item active"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span> Tulis Resep Baru</a>
+      <a href="riwayat-resep.html" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Riwayat Resep</a>
+      <div class="nav-section-label nav-section-label-spaced">Referensi</div>
+      <a href="../apoteker/stok.html" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Stok Obat</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="nav-item nav-logout" onclick="Auth.logout()"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Tulis Resep Baru</h1>
+        <div class="breadcrumb">Dokter / <a href="dashboard.html">Dashboard</a> / Tulis Resep</div>
+      </div>
+      <div class="header-right">
+        <div class="header-time" id="live-clock"></div>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="alert alert-info">
+        <span class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+        <div>Resep ini akan dikirim ke Apoteker dan disinkronkan ke <strong>SATUSEHAT Platform</strong> sebagai resource <strong>MedicationRequest</strong> (FHIR R4). Kode obat menggunakan <strong>Kamus Farmasi & Alat Kesehatan (KFA)</strong> Kemenkes RI.</div>
+      </div>
+
+      <form id="form-resep" onsubmit="submitResep(event)">
+
+        <!-- SECTION 1: Data Pasien -->
+        <div class="card mb-lg">
+          <div class="card-header">
+            <div><div class="card-title">Data Pasien</div><div class="card-subtitle">Cari pasien berdasarkan NIK</div></div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-2 mb-lg">
+              <div class="form-group">
+                <label>NIK Pasien <span class="required">*</span></label>
+                <div class="input-group">
+                  <input type="text" id="patient_nik" class="form-control" placeholder="16 digit NIK" maxlength="16" oninput="resetPatientInfo()"/>
+                  <button type="button" class="btn btn-outline-teal input-addon-right" onclick="cariPasien()">Cari</button>
+                </div>
+                <span class="form-hint">Masukkan NIK 16 digit, lalu klik Cari</span>
+              </div>
+              <div class="form-group">
+                <label>IHS Number (SatuSehat)</label>
+                <input type="text" id="patient_ihs" class="form-control" readonly placeholder="Otomatis terisi setelah cari NIK"/>
+              </div>
+            </div>
+
+            <!-- Info Pasien -->
+            <div id="patient-info-box" class="box-info-teal">
+              <div class="info-grid">
+                <div class="info-item"><label>Nama Lengkap</label><div class="info-value" id="pi-name">-</div></div>
+                <div class="info-item"><label>Jenis Kelamin</label><div class="info-value" id="pi-gender">-</div></div>
+                <div class="info-item"><label>Tanggal Lahir</label><div class="info-value" id="pi-dob">-</div></div>
+                <div class="info-item"><label>Alamat</label><div class="info-value" id="pi-address">-</div></div>
+              </div>
+            </div>
+            <!-- Hidden inputs -->
+            <input type="hidden" id="patient_name"/>
+            <input type="hidden" id="patient_ihs_number"/>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Data Obat -->
+        <div class="card mb-lg">
+          <div class="card-header">
+            <div><div class="card-title">Data Obat (Medication)</div><div class="card-subtitle">Pilih obat dari Kamus Farmasi KFA Kemenkes</div></div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-2 mb-lg">
+              <div class="form-group">
+                <label>Cari Obat <span class="required">*</span></label>
+                <div class="search-group">
+                  <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                  <input type="text" id="search-obat" class="form-control" placeholder="Ketik nama obat atau kode KFA..." oninput="handleSearchObat(this.value)"/>
+                </div>
+                <!-- Dropdown hasil pencarian -->
+                <div id="obat-dropdown" class="dropdown-menu-search"></div>
+              </div>
+              <div class="form-group pos-relative">
+                <label>Kode KFA (MedicationRequest)</label>
+                <input type="text" id="medication_kfa" class="form-control" readonly placeholder="Otomatis terisi"/>
+                <span class="form-hint">Dokter boleh gunakan kode 92xxxxxx atau 93xxxxxx</span>
+              </div>
+            </div>
+
+            <!-- Info Obat Terpilih -->
+            <div id="obat-info-box" class="box-info-teal mb-lg">
+              <div class="info-grid">
+                <div class="info-item"><label>Nama Obat</label><div class="info-value" id="oi-name">-</div></div>
+                <div class="info-item"><label>Bentuk Sediaan</label><div class="info-value" id="oi-form">-</div></div>
+                <div class="info-item"><label>Produsen</label><div class="info-value" id="oi-manufacturer">-</div></div>
+                <div class="info-item"><label>Stok Tersedia</label><div class="info-value" id="oi-stock">-</div></div>
+              </div>
+            </div>
+            <input type="hidden" id="medication_id"/>
+            <input type="hidden" id="medication_name_hidden"/>
+            <input type="hidden" id="medication_form_hidden"/>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Instruksi Dosis -->
+        <div class="card mb-lg">
+          <div class="card-header">
+            <div><div class="card-title">Instruksi Dosis (dosageInstruction)</div><div class="card-subtitle">Sesuai field MedicationRequest FHIR SatuSehat</div></div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-3 mb-lg">
+              <div class="form-group">
+                <label>Rute Pemberian <span class="required">*</span></label>
+                <select id="dosage_route" class="form-control" title="Pilih rute pemberian obat" required>
+                  <option value="">-- Pilih Rute --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Dosis <span class="required">*</span></label>
+                <div class="input-group">
+                  <input type="number" id="dosage_value" class="form-control" placeholder="e.g. 1, 5" min="0.1" step="0.1" required/>
+                  <input type="text" id="dosage_unit" class="form-control input-addon-no-left-border" placeholder="tablet / mL / kapsul" required/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Frekuensi (Timing Code) <span class="required">*</span></label>
+                <select id="dosage_timing" class="form-control" title="Pilih frekuensi pemberian obat" required onchange="updateTimingRepeat(this.value)">
+                  <option value="">-- Pilih Frekuensi --</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Jumlah Obat (Dispense Quantity) <span class="required">*</span></label>
+                <div class="input-group">
+                  <input type="number" id="quantity" class="form-control" placeholder="e.g. 30" min="1" required/>
+                  <input type="text" id="quantity_unit" class="form-control input-addon-no-left-border" placeholder="tablet / botol" required/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Durasi Pemakaian (Hari)</label>
+                <input type="number" id="expected_supply_days" class="form-control" placeholder="e.g. 30" min="1"/>
+              </div>
+              <div class="form-group full">
+                <label>Aturan Tambahan (additionalInstruction)</label>
+                <input type="text" id="additional_instruction" class="form-control" placeholder="e.g. Diminum setelah makan, Kocok sebelum diminum"/>
+              </div>
+              <div class="form-group full">
+                <label>Instruksi ke Pasien (patientInstruction)</label>
+                <input type="text" id="patient_instruction" class="form-control" placeholder="e.g. Minum 3x sehari dengan segelas air putih"/>
+              </div>
+              <div class="form-group full">
+                <label>Catatan Resep (note)</label>
+                <textarea id="note" class="form-control" rows="2" placeholder="Catatan tambahan untuk apoteker..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Data Pendukung -->
+        <div class="card mb-lg">
+          <div class="card-header">
+            <div><div class="card-title">Data Pendukung (DocumentReference)</div><div class="card-subtitle">Jenis pembiayaan dan dokumen pendukung</div></div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Jenis Pembiayaan <span class="required">*</span></label>
+                <select id="payment_type" class="form-control" title="Pilih jenis pembiayaan pasien" required onchange="toggleSEP(this.value)">
+                  <option value="">-- Pilih Pembiayaan --</option>
+                  <option value="BPJS-K">BPJS-K</option>
+                  <option value="Biaya-Sendiri">Biaya-Sendiri (Umum)</option>
+                  <option value="Biaya-Perusahaan">Biaya-Perusahaan</option>
+                  <option value="Asuransi-Swasta">Asuransi-Swasta</option>
+                </select>
+              </div>
+              <div class="form-group hide" id="sep-group">
+                <label>Nomor SEP BPJS <span class="required">*</span></label>
+                <input type="text" id="sep_number" class="form-control" placeholder="Nomor Surat Eligibilitas Peserta"/>
+              </div>
+              <div class="form-group">
+                <label>Substitusi Diizinkan?</label>
+                <select id="substitution_allowed" class="form-control" title="Apakah substitusi obat diizinkan">
+                  <option value="true">Ya, izinkan substitusi</option>
+                  <option value="false">Tidak, jangan diganti</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex-end-gap mt-sm">
+          <a href="dashboard.html" class="btn btn-secondary">← Batal</a>
+          <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
+          <button type="submit" class="btn btn-primary btn-lg" id="btn-submit">
+            <span id="btn-submit-text">Kirim Resep ke Apoteker</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Modal Konfirmasi -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title">Konfirmasi Resep</span>
+      <span class="modal-close" onclick="Utils.closeModal('modal-confirm')">✕</span>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-warning">
+        <span class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        <div>Pastikan data resep sudah benar. Resep yang sudah dikirim ke apoteker hanya bisa dibatalkan sebelum diproses.</div>
+      </div>
+      <div id="confirm-summary"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('modal-confirm')">Periksa Lagi</button>
+      <button class="btn btn-primary" onclick="confirmSubmit()">Konfirmasi & Kirim</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  Auth.requireAuth('dokter');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  let selectedMedication = null;
+  let foundPatient       = null;
+  let formData           = null;
+
+  // Isi dropdown rute & frekuensi
+  function initDropdowns() {
+    const routeSel = document.getElementById('dosage_route');
+    MOCK_DATA.dosage_routes.forEach(r => {
+      routeSel.innerHTML += `<option value="${r.code}" data-display="${r.display}">${r.display}</option>`;
+    });
+
+    const timingSel = document.getElementById('dosage_timing');
+    MOCK_DATA.timing_codes.forEach(t => {
+      timingSel.innerHTML += `<option value="${t.code}">${t.code} — ${t.label}</option>`;
+    });
+  }
+
+  // Cari Pasien by NIK
+  async function cariPasien() {
+    const nik = document.getElementById('patient_nik').value.trim();
+    if (nik.length < 16) { Utils.toast('warning', 'NIK Tidak Valid', 'NIK harus 16 digit.'); return; }
+    try {
+      const p = await API.searchPatient(nik);
+      foundPatient = p;
+      document.getElementById('patient_ihs').value       = p.ihs_number;
+      document.getElementById('patient_ihs_number').value= p.ihs_number;
+      document.getElementById('patient_name').value      = p.name;
+      document.getElementById('pi-name').textContent     = p.name;
+      document.getElementById('pi-gender').textContent   = p.gender === 'L' ? 'Laki-laki' : 'Perempuan';
+      document.getElementById('pi-dob').textContent      = Utils.formatDate(p.dob);
+      document.getElementById('pi-address').textContent  = p.address;
+      document.getElementById('patient-info-box').style.display = 'block';
+      Utils.toast('success', 'Pasien Ditemukan', p.name);
+    } catch(e) {
+      Utils.toast('error', 'Pasien Tidak Ditemukan', e.message);
+      document.getElementById('patient-info-box').style.display = 'none';
+    }
+  }
+
+  function resetPatientInfo() {
+    foundPatient = null;
+    document.getElementById('patient-info-box').style.display = 'none';
+    document.getElementById('patient_ihs').value = '';
+  }
+
+  // Search Obat
+  const handleSearchObat = Utils.debounce(async (q) => {
+    const dropdown = document.getElementById('obat-dropdown');
+    if (!q || q.length < 2) { dropdown.style.display = 'none'; return; }
+    const results = await API.getMedications({ search: q });
+    if (!results.length) { dropdown.style.display = 'none'; return; }
+
+    dropdown.innerHTML = results.map(m => `
+      <div onclick="selectObat('${m.id}')" class="dropdown-item-hover">
+        <div class="td-main">${m.name}</div>
+        <div class="td-sub">KFA: ${m.kfa_code_92} | Stok: ${m.stock} ${m.unit}</div>
+      </div>
+    `).join('');
+    dropdown.style.display = 'block';
+  }, 300);
+
+  async function selectObat(id) {
+    const med = await API.getMedication(id);
+    selectedMedication = med;
+    document.getElementById('search-obat').value         = med.name;
+    document.getElementById('medication_kfa').value      = med.kfa_code_92 + ' (atau ' + med.kfa_code_93 + ')';
+    document.getElementById('medication_id').value       = med.id;
+    document.getElementById('medication_name_hidden').value = med.name;
+    document.getElementById('medication_form_hidden').value = med.form;
+    document.getElementById('dosage_unit').value         = med.unit;
+    document.getElementById('quantity_unit').value       = med.unit;
+    document.getElementById('oi-name').textContent       = med.name;
+    document.getElementById('oi-form').textContent       = med.form;
+    document.getElementById('oi-manufacturer').textContent = med.manufacturer;
+    document.getElementById('oi-stock').innerHTML        = `${med.stock} ${med.unit} ${Utils.stockBadge(med.stock, med.min_stock)}`;
+    document.getElementById('obat-info-box').style.display = 'block';
+    document.getElementById('obat-dropdown').style.display = 'none';
+  }
+
+  function toggleSEP(val) {
+    if (val === 'BPJS-K') {
+      document.getElementById('sep-group').classList.remove('hide');
+    } else {
+      document.getElementById('sep-group').classList.add('hide');
+    }
+  }
+
+  function updateTimingRepeat(code) {}
+
+  async function submitResep(e) {
+    e.preventDefault();
+    if (!foundPatient)       { Utils.toast('error', 'Pasien Belum Dicari', 'Klik tombol Cari untuk mencari data pasien.'); return; }
+    if (!selectedMedication) { Utils.toast('error', 'Obat Belum Dipilih', 'Pilih obat terlebih dahulu.'); return; }
+    if (selectedMedication.stock === 0) { Utils.toast('warning', 'Stok Habis', 'Obat ini stoknya habis. Pilih obat lain atau pertimbangkan substitusi.'); return; }
+
+    const routeSel  = document.getElementById('dosage_route');
+    const timingSel = document.getElementById('dosage_timing');
+    const payType   = document.getElementById('payment_type').value;
+
+    formData = {
+      patient_ihs_number:    foundPatient.ihs_number,
+      patient_name:          foundPatient.name,
+      patient_nik:           foundPatient.nik,
+      medication_id:         selectedMedication.id,
+      medication_kfa:        selectedMedication.kfa_code_92,
+      medication_name:       selectedMedication.name,
+      medication_form:       selectedMedication.form,
+      dosage_route:          { code: routeSel.value, display: routeSel.options[routeSel.selectedIndex]?.getAttribute('data-display'), system: 'http://snomed.info/sct' },
+      dosage_value:          parseFloat(document.getElementById('dosage_value').value),
+      dosage_unit:           document.getElementById('dosage_unit').value,
+      dosage_timing_code:    timingSel.value,
+      dosage_timing_repeat:  MOCK_DATA.timing_codes.find(t => t.code === timingSel.value)?.repeat,
+      dosage_additional_instruction: document.getElementById('additional_instruction').value,
+      dosage_patient_instruction:    document.getElementById('patient_instruction').value,
+      quantity:              parseInt(document.getElementById('quantity').value),
+      quantity_unit:         document.getElementById('quantity_unit').value,
+      expected_supply_days:  parseInt(document.getElementById('expected_supply_days').value) || null,
+      substitution_allowed:  document.getElementById('substitution_allowed').value === 'true',
+      payment_type:          payType,
+      sep_number:            payType === 'BPJS-K' ? document.getElementById('sep_number').value : null,
+      note:                  document.getElementById('note').value,
+      requester_id:          Auth.getUser()?.id,
+      requester_name:        Auth.getUser()?.name
+    };
+
+    // Tampilkan konfirmasi
+    document.getElementById('confirm-summary').innerHTML = `
+      <div class="info-grid">
+        <div class="info-item"><label>Pasien</label><div class="info-value">${formData.patient_name}</div></div>
+        <div class="info-item"><label>Obat</label><div class="info-value">${formData.medication_name}</div></div>
+        <div class="info-item"><label>Dosis</label><div class="info-value">${formData.dosage_value} ${formData.dosage_unit} — ${formData.dosage_timing_code}</div></div>
+        <div class="info-item"><label>Jumlah</label><div class="info-value">${formData.quantity} ${formData.quantity_unit}</div></div>
+        <div class="info-item"><label>Pembiayaan</label><div class="info-value">${Utils.paymentBadge(formData.payment_type)}</div></div>
+      </div>
+    `;
+    Utils.openModal('modal-confirm');
+  }
+
+  async function confirmSubmit() {
+    Utils.closeModal('modal-confirm');
+    const btn     = document.getElementById('btn-submit');
+    const btnText = document.getElementById('btn-submit-text');
+    btn.disabled  = true;
+    btnText.innerHTML = '<span class="spinner spinner-sm"></span> Mengirim...';
+
+    try {
+      const res = await API.createPrescription(formData);
+      Utils.toast('success', 'Resep Terkirim!', res.message);
+      setTimeout(() => window.location.href = 'riwayat-resep.html', 1500);
+    } catch(e) {
+      Utils.toast('error', 'Gagal Kirim', e.message);
+      btn.disabled  = false;
+      btnText.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path></svg> Kirim Resep ke Apoteker';
+    }
+  }
+
+  function resetForm() {
+    document.getElementById('form-resep').reset();
+    selectedMedication = null;
+    foundPatient       = null;
+    document.getElementById('patient-info-box').style.display = 'none';
+    document.getElementById('obat-info-box').style.display    = 'none';
+    document.getElementById('patient_ihs').value = '';
+  }
+
+  // Tutup dropdown saat klik luar
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#search-obat') && !e.target.closest('#obat-dropdown')) {
+      document.getElementById('obat-dropdown').style.display = 'none';
+    }
+  });
+
+  initDropdowns();
+</script>
+</body>
+</html>

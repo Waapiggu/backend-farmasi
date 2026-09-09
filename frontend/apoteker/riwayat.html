@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Riwayat Dispense — SisFarmasi</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+<div class="app-layout">
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></div><div class="logo-text"><span>SisFarmasi</span><span>SatuSehat</span></div></div>
+    <div class="sidebar-user"><div class="user-avatar" id="sidebar-user-avatar">?</div><div class="user-info"><span id="sidebar-user-name">Loading...</span><span id="sidebar-user-role">Apoteker</span></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span> Dashboard</a>
+      <a href="antrian.html"   class="nav-item"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"></path></svg></span> Antrian Resep</a>
+      <a href="riwayat.html"   class="nav-item active"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span> Riwayat Dispense</a>
+      <a href="stok.html"      class="nav-item"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path></svg></span> Stok Obat</a>
+    </nav>
+    <div class="sidebar-footer"><div class="nav-item nav-logout" onclick="Auth.logout()"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span> Keluar</div></div>
+  </div>
+
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Riwayat Dispense</h1>
+        <div class="breadcrumb">Apoteker / Riwayat Dispense</div>
+      </div>
+      <div class="header-right"><div class="header-time" id="live-clock"></div></div>
+    </div>
+
+    <div class="page-content">
+      <div class="card">
+        <div class="toolbar">
+          <div class="search-group search-w-260">
+            <span class="search-icon"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+            <input type="text" id="search-input" class="form-control" placeholder="Cari pasien / obat..." oninput="applyFilter()"/>
+          </div>
+          <div class="spacer"></div>
+          <span id="result-count" class="text-muted-sm"></span>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Dispense</th>
+                <th>No. Resep</th>
+                <th>Pasien</th>
+                <th>Nama Obat</th>
+                <th>Kode KFA (Dispense)</th>
+                <th>Jumlah</th>
+                <th>Harga Total</th>
+                <th>Substitusi</th>
+                <th>Pembiayaan</th>
+                <th>Waktu Serah</th>
+                <th>Oleh</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tb-riwayat">
+              <tr><td colspan="12"><div class="empty-state"><div class="spinner"></div><p>Memuat riwayat...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pagination-info" id="pag-info">-</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Modal Detail -->
+<div class="modal-overlay" id="modal-detail">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title">Detail Penyerahan Obat</span>
+      <span class="modal-close" onclick="Utils.closeModal('modal-detail')">✕</span>
+    </div>
+    <div class="modal-body" id="modal-detail-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('modal-detail')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  Auth.requireAuth('apoteker');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  let allDispenses = [];
+  let filtered     = [];
+
+  async function loadRiwayat() {
+    try {
+      allDispenses = await API.getDispenses();
+      filtered     = [...allDispenses];
+      render();
+    } catch(e) { Utils.toast('error', 'Gagal', e.message); }
+  }
+
+  function applyFilter() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    filtered = allDispenses.filter(d =>
+      !q || d.patient_name.toLowerCase().includes(q) || d.medication_name.toLowerCase().includes(q) || d.prescription_number.toLowerCase().includes(q)
+    );
+    render();
+  }
+
+  function render() {
+    const tb = document.getElementById('tb-riwayat');
+    document.getElementById('result-count').textContent = `${filtered.length} record`;
+    document.getElementById('pag-info').textContent     = `${filtered.length} total dispense`;
+
+    if (!filtered.length) {
+      tb.innerHTML = Utils.emptyRow(12, 'Belum ada data dispense');
+      return;
+    }
+
+    tb.innerHTML = filtered.map(d => `
+      <tr>
+        <td><span class="td-mono">${d.id}</span></td>
+        <td><div class="td-main">${d.prescription_number}</div></td>
+        <td><div class="td-main">${d.patient_name}</div><div class="td-sub">${d.patient_ihs_number}</div></td>
+        <td><div class="td-main">${d.medication_name}</div><div class="td-sub">${d.medication_form}</div></td>
+        <td>${Utils.kfaTag(d.medication_kfa)}<small class="kfa-note">93xxxxxx (Valid)</small></td>
+        <td>${d.quantity} ${d.quantity_unit}</td>
+        <td class="text-bold-teal">${Utils.formatCurrency(d.total_price)}</td>
+        <td>${d.substitution_was_substituted ? '<span class="badge badge-on-hold">Substitusi</span>' : '<span class="badge badge-ok">Tanpa Substitusi</span>'}</td>
+        <td>${Utils.paymentBadge(d.payment_type)}</td>
+        <td>${d.dispensed_at_display}</td>
+        <td><div class="td-main">${d.dispensed_by_name}</div></td>
+        <td><button class="btn btn-outline-teal btn-sm" onclick="showDetail('${d.id}')">Detail</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function showDetail(id) {
+    const d = allDispenses.find(x => x.id === id);
+    if (!d) return;
+    document.getElementById('modal-detail-body').innerHTML = `
+      <div class="info-grid mb-md">
+        <div class="info-item"><label>ID Dispense (MedicationDispense)</label><div class="info-value">${Utils.kfaTag(d.id)}</div></div>
+        <div class="info-item"><label>No. Resep Rujukan</label><div class="info-value">${d.prescription_number}</div></div>
+        <div class="info-item"><label>Waktu Serah</label><div class="info-value">${d.dispensed_at_display}</div></div>
+        <div class="info-item"><label>Status</label><div class="info-value">${Utils.statusBadge(d.status)}</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="info-grid mb-md">
+        <div class="info-item"><label>Nama Pasien</label><div class="info-value">${d.patient_name}</div></div>
+        <div class="info-item"><label>IHS Number</label><div class="info-value">${Utils.kfaTag(d.patient_ihs_number)}</div></div>
+        <div class="info-item"><label>Pembiayaan</label><div class="info-value">${Utils.paymentBadge(d.payment_type)}</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="info-grid mb-md">
+        <div class="info-item"><label>Nama Obat</label><div class="info-value">${d.medication_name}</div></div>
+        <div class="info-item"><label>Kode KFA Dispense</label><div class="info-value">${Utils.kfaTag(d.medication_kfa)}<small class="kfa-note ok">Sesuai standar 93xxxxxx (POA)</small></div></div>
+        <div class="info-item"><label>Jumlah Diserahkan</label><div class="info-value">${d.quantity} ${d.quantity_unit}</div></div>
+        <div class="info-item"><label>Harga Per Item</label><div class="info-value">${Utils.formatCurrency(d.price_per_item)}</div></div>
+        <div class="info-item"><label>Total Harga</label><div class="info-value text-bold-teal">${Utils.formatCurrency(d.total_price)}</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="info-grid">
+        <div class="info-item"><label>Substitusi?</label><div class="info-value">${d.substitution_was_substituted ? 'Ya' : 'Tidak'}</div></div>
+        ${d.substitution_type ? `<div class="info-item"><label>Tipe Substitusi</label><div class="info-value">${d.substitution_type}</div></div>` : ''}
+        ${d.substitution_reason ? `<div class="info-item"><label>Alasan</label><div class="info-value">${d.substitution_reason}</div></div>` : ''}
+        <div class="info-item"><label>Diserahkan Oleh</label><div class="info-value">${d.dispensed_by_name}</div></div>
+      </div>
+    `;
+    Utils.openModal('modal-detail');
+  }
+
+  loadRiwayat();
+</script>
+</body>
+</html>

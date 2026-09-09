@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Proses Dispense — SisFarmasi</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+<div class="app-layout">
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></div><div class="logo-text"><span>SisFarmasi</span><span>SatuSehat</span></div></div>
+    <div class="sidebar-user"><div class="user-avatar" id="sidebar-user-avatar">?</div><div class="user-info"><span id="sidebar-user-name">Loading...</span><span id="sidebar-user-role">Apoteker</span></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span> Dashboard</a>
+      <a href="antrian.html"   class="nav-item active"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"></path></svg></span> Antrian Resep</a>
+      <a href="riwayat.html"   class="nav-item"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span> Riwayat Dispense</a>
+      <a href="stok.html"      class="nav-item"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path></svg></span> Stok Obat</a>
+    </nav>
+    <div class="sidebar-footer"><div class="nav-item nav-logout" onclick="Auth.logout()"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span> Keluar</div></div>
+  </div>
+
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Proses Dispense</h1>
+        <div class="breadcrumb">Apoteker / <a href="antrian.html">Antrian</a> / Proses Dispense</div>
+      </div>
+      <div class="header-right"><div class="header-time" id="live-clock"></div></div>
+    </div>
+
+    <div class="page-content" id="page-content">
+      <div class="empty-state"><div class="spinner"></div><p>Memuat data resep...</p></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Modal Sukses -->
+<div class="modal-overlay" id="modal-sukses">
+  <div class="modal modal-sm">
+    <div class="modal-body modal-body-center">
+      <div class="modal-icon-lg"><svg width="32" height="32" fill="none" stroke="var(--teal-600)" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <h3 class="modal-heading">Obat Berhasil Diserahkan!</h3>
+      <p class="modal-text">Data telah disimpan dan akan disinkronkan ke <strong>SATUSEHAT</strong> sebagai MedicationDispense.</p>
+      <p id="sukses-no" class="modal-subtext"></p>
+      <div class="modal-actions">
+        <a href="antrian.html" class="btn btn-secondary">← Kembali ke Antrian</a>
+        <a href="riwayat.html" class="btn btn-primary">Lihat Riwayat</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  Auth.requireAuth('apoteker');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  let prescription = null;
+  let medication   = null;
+
+  async function loadPage() {
+    const params = new URLSearchParams(window.location.search);
+    const id     = params.get('id');
+    if (!id) { window.location.href = 'antrian.html'; return; }
+
+    try {
+      prescription = await API.getPrescription(id);
+      const meds   = await API.getMedications();
+      medication   = meds.find(m => m.id === prescription.medication_id);
+
+      if (prescription.status !== 'active') {
+        document.getElementById('page-content').innerHTML = `
+          <div class="alert alert-warning">
+            <span class="alert-icon">!</span>
+            <div>Resep ini tidak dapat diproses karena statusnya sudah <strong>${prescription.status}</strong>. <a href="antrian.html">Kembali ke antrian.</a></div>
+          </div>`;
+        return;
+      }
+
+      renderForm();
+    } catch(e) {
+      Utils.toast('error', 'Error', e.message);
+      document.getElementById('page-content').innerHTML = `<div class="alert alert-danger"><span class="alert-icon">!</span><div>${e.message}</div></div>`;
+    }
+  }
+
+  function renderForm() {
+    const p = prescription;
+    const m = medication;
+    const stockOk = m && m.stock >= p.quantity;
+
+    document.getElementById('page-content').innerHTML = `
+      ${!stockOk ? `<div class="alert alert-warning"><span class="alert-icon">!</span><div>Stok obat <strong>${m ? m.name : ''}</strong> saat ini hanya <strong>${m ? m.stock : 0} ${m ? m.unit : ''}</strong>, sedangkan resep membutuhkan <strong>${p.quantity} ${p.quantity_unit}</strong>. Pertimbangkan substitusi obat.</div></div>` : ''}
+
+      <div class="grid-2-col">
+
+        <!-- Info Resep (kiri) -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Data Resep (MedicationRequest)</div></div>
+          <div class="card-body">
+            <div class="info-grid">
+              <div class="info-item"><label>No. Resep</label><div class="info-value">${p.prescription_number}</div></div>
+              <div class="info-item"><label>No. Item</label><div class="info-value">${p.prescription_item_number}</div></div>
+              <div class="info-item"><label>Pasien</label><div class="info-value">${p.patient_name}</div></div>
+              <div class="info-item"><label>IHS Number</label><div class="info-value">${Utils.kfaTag(p.patient_ihs_number)}</div></div>
+              <div class="info-item"><label>Nama Obat</label><div class="info-value">${p.medication_name}</div></div>
+              <div class="info-item"><label>Kode KFA (Resep)</label><div class="info-value">${Utils.kfaTag(p.medication_kfa)}</div></div>
+              <div class="info-item"><label>Dosis Resep</label><div class="info-value">${p.dosage_value} ${p.dosage_unit} — ${p.dosage_timing_code}</div></div>
+              <div class="info-item"><label>Jumlah Resep</label><div class="info-value">${p.quantity} ${p.quantity_unit}</div></div>
+              <div class="info-item grid-col-full"><label>Aturan Tambahan</label><div class="info-value">${p.dosage_additional_instruction || '-'}</div></div>
+              <div class="info-item"><label>Pembiayaan</label><div class="info-value">${Utils.paymentBadge(p.payment_type)}</div></div>
+              <div class="info-item"><label>Dokter</label><div class="info-value">${p.requester_name}</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stok Obat (kanan) -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Stok Obat Apoteker</div></div>
+          <div class="card-body">
+            ${m ? `
+              <div class="info-grid">
+                <div class="info-item"><label>Nama Obat</label><div class="info-value">${m.name}</div></div>
+                <div class="info-item"><label>Kode KFA (Dispense)</label><div class="info-value">${Utils.kfaTag(m.kfa_code_93)}<small class="kfa-note">Wajib 93xxxxxx untuk MedicationDispense</small></div></div>
+                <div class="info-item"><label>Bentuk Sediaan</label><div class="info-value">${m.form}</div></div>
+                <div class="info-item"><label>Stok Tersedia</label><div class="info-value text-lg-bold ${m.stock===0?'text-danger':stockOk?'text-success':'text-warning'}">${m.stock} ${m.unit} ${Utils.stockBadge(m.stock, m.min_stock)}</div></div>
+                <div class="info-item"><label>No. Lot</label><div class="info-value">${m.lot_number}</div></div>
+                <div class="info-item"><label>Exp. Date</label><div class="info-value">${Utils.formatDate(m.expiration_date)}</div></div>
+                <div class="info-item"><label>Harga Per ${m.unit}</label><div class="info-value">${Utils.formatCurrency(m.price)}</div></div>
+              </div>
+            ` : '<div class="alert alert-warning"><span class="alert-icon">!</span><div>Data obat tidak ditemukan.</div></div>'}
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Dispense -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">Form Penyerahan Obat (MedicationDispense)</div><div class="card-subtitle">Lengkapi data sebelum konfirmasi penyerahan</div></div>
+        <div class="card-body">
+          <form id="form-dispense" onsubmit="submitDispense(event)">
+
+            <div class="form-grid-3 mb-lg">
+              <div class="form-group">
+                <label>Jumlah yang Diserahkan <span class="required">*</span></label>
+                <div class="input-group">
+                  <input type="number" id="qty" class="form-control" value="${p.quantity}" min="1" max="${m ? m.stock : 9999}" required oninput="updateTotal()"/>
+                  <span class="input-addon">${p.quantity_unit}</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Harga Per Item <span class="required">*</span></label>
+                <div class="input-group">
+                  <span class="input-addon">Rp</span>
+                  <input type="number" id="price" class="form-control" value="${m ? m.price : 0}" min="0" required oninput="updateTotal()"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Total Harga</label>
+                <input type="text" id="total-price" class="form-control" readonly/>
+              </div>
+            </div>
+
+            <!-- Substitusi -->
+            <div class="box-substitusi">
+              <div class="flex-center flex-gap-lg ${p.substitution_allowed ? 'mb-sub-gap' : ''}">
+                <label class="label-checkbox">
+                  <input type="checkbox" id="was-substituted" ${!p.substitution_allowed ? 'disabled' : ''} onchange="toggleSubstitusi(this.checked)" class="checkbox-teal"/>
+                  Penebusan dengan substitusi obat?
+                </label>
+                ${!p.substitution_allowed ? `<span class="badge badge-cancelled">Tidak diizinkan dokter</span>` : `<span class="badge badge-active">Diizinkan dokter</span>`}
+              </div>
+              <div id="substitusi-detail" class="hide">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label>Tipe Substitusi</label>
+                    <select id="sub-type" class="form-control">
+                      ${MOCK_DATA.substitution_types.map(t => `<option value="${t.code}">${t.display}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Alasan Substitusi</label>
+                    <select id="sub-reason" class="form-control">
+                      ${MOCK_DATA.substitution_reasons.map(r => `<option value="${r.code}">${r.display}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div class="form-group full">
+                    <label>Keterangan Tambahan</label>
+                    <input type="text" id="sub-note" class="form-control" placeholder="Penjelasan tambahan mengenai substitusi"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Rute Pemberian</label>
+                <input type="text" class="form-control" value="${p.dosage_route.display}" readonly/>
+              </div>
+              <div class="form-group">
+                <label>Frekuensi</label>
+                <input type="text" class="form-control" value="${p.dosage_timing_code}" readonly/>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="flex-end-gap">
+              <a href="antrian.html" class="btn btn-secondary">Batal</a>
+              <button type="submit" class="btn btn-primary btn-lg" id="btn-submit">
+                <span id="btn-text">Serahkan Obat ke Pasien</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    updateTotal();
+  }
+
+  function updateTotal() {
+    const qty   = parseFloat(document.getElementById('qty')?.value) || 0;
+    const price = parseFloat(document.getElementById('price')?.value) || 0;
+    const el    = document.getElementById('total-price');
+    if (el) el.value = Utils.formatCurrency(qty * price);
+  }
+
+  function toggleSubstitusi(checked) {
+    if (checked) {
+      document.getElementById('substitusi-detail').classList.remove('hide');
+    } else {
+      document.getElementById('substitusi-detail').classList.add('hide');
+    }
+  }
+
+  async function submitDispense(e) {
+    e.preventDefault();
+    const btn    = document.getElementById('btn-submit');
+    const text   = document.getElementById('btn-text');
+    const wasSub = document.getElementById('was-substituted').checked;
+    const qty    = parseInt(document.getElementById('qty').value);
+    const price  = parseFloat(document.getElementById('price').value);
+
+    btn.disabled = true;
+    text.innerHTML = '<span class="spinner spinner-sm"></span> Memproses...';
+
+    const data = {
+      prescription_id:    prescription.id,
+      prescription_number: prescription.prescription_number,
+      patient_name:       prescription.patient_name,
+      patient_ihs_number: prescription.patient_ihs_number,
+      medication_id:      prescription.medication_id,
+      medication_kfa:     medication?.kfa_code_93,  // Apoteker WAJIB 93xxxxxx
+      medication_name:    prescription.medication_name,
+      medication_form:    prescription.medication_form,
+      quantity:           qty,
+      quantity_unit:      prescription.quantity_unit,
+      dosage_route:       prescription.dosage_route,
+      dosage_value:       prescription.dosage_value,
+      dosage_unit:        prescription.dosage_unit,
+      dosage_timing_code: prescription.dosage_timing_code,
+      dosage_additional_instruction: prescription.dosage_additional_instruction,
+      substitution_was_substituted: wasSub,
+      substitution_type:   wasSub ? document.getElementById('sub-type')?.value : null,
+      substitution_reason: wasSub ? document.getElementById('sub-reason')?.value : null,
+      substitution_note:   wasSub ? document.getElementById('sub-note')?.value : null,
+      price_per_item:     price,
+      total_price:        qty * price,
+      payment_type:       prescription.payment_type,
+      dispensed_by_id:    Auth.getUser()?.id,
+      dispensed_by_name:  Auth.getUser()?.name
+    };
+
+    try {
+      const res = await API.createDispense(data);
+      document.getElementById('sukses-no').textContent = `ID Dispense: ${res.data?.id || '-'}`;
+      Utils.openModal('modal-sukses');
+    } catch(e) {
+      Utils.toast('error', 'Gagal', e.message);
+      btn.disabled = false;
+      text.innerHTML = 'Serahkan Obat ke Pasien';
+    }
+  }
+
+  loadPage();
+</script>
+</body>
+</html>

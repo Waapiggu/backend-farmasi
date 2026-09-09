@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Apoteker — SisFarmasi</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></div><div class="logo-text"><span>SisFarmasi</span><span>SatuSehat</span></div></div>
+    <div class="sidebar-user"><div class="user-avatar" id="sidebar-user-avatar">?</div><div class="user-info"><span id="sidebar-user-name">Loading...</span><span id="sidebar-user-role">Apoteker</span></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="dashboard.html"  class="nav-item active"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span> Dashboard</a>
+      <a href="antrian.html"    class="nav-item" id="nav-antrian"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span> Antrian Resep<span class="nav-badge" id="badge-antrian">0</span></a>
+      <a href="riwayat.html"    class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span> Riwayat Dispense</a>
+      <a href="stok.html"       class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Stok Obat</a>
+    </nav>
+    <div class="sidebar-footer"><div class="nav-item nav-logout" onclick="Auth.logout()"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar</div></div>
+  </div>
+
+  <!-- Main -->
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Dashboard Apoteker</h1>
+        <div class="breadcrumb">Apoteker / Overview</div>
+      </div>
+      <div class="header-right"></div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner dark">
+        <div class="welcome-banner-text">
+          <p class="label">Selamat Datang,</p>
+          <h2 id="welcome-name">apt. ...</h2>
+          <p class="date">Hari ini, <span id="today-date"></span></p>
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-card-info">
+            <div class="stat-label">Resep Masuk Hari Ini</div>
+            <div class="stat-value" id="stat-total">-</div>
+            <div class="stat-sub">Total resep diterima</div>
+          </div>
+          <div class="stat-icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-info">
+            <div class="stat-label">Antrian Menunggu</div>
+            <div class="stat-value" id="stat-queue">-</div>
+            <div class="stat-sub">Perlu diproses segera</div>
+          </div>
+          <div class="stat-icon yellow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-info">
+            <div class="stat-label">Diserahkan Hari Ini</div>
+            <div class="stat-value" id="stat-dispensed">-</div>
+            <div class="stat-sub">MedicationDispense completed</div>
+          </div>
+          <div class="stat-icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-info">
+            <div class="stat-label">Stok Perlu Perhatian</div>
+            <div class="stat-value" id="stat-stock-alert">-</div>
+            <div class="stat-sub">Menipis + habis</div>
+          </div>
+          <div class="stat-icon red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+
+        <!-- Antrian Terbaru -->
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Antrian Masuk</div><div class="card-subtitle">Resep menunggu diproses</div></div>
+            <a href="antrian.html" class="btn btn-secondary btn-sm">Lihat Semua →</a>
+          </div>
+          <div id="antrian-list">
+            <div class="empty-state"><div class="spinner"></div><p>Memuat...</p></div>
+          </div>
+        </div>
+
+        <!-- Alert Stok -->
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Alert Stok</div><div class="card-subtitle">Obat menipis atau habis</div></div>
+            <a href="stok.html" class="btn btn-secondary btn-sm">Kelola Stok →</a>
+          </div>
+          <div id="stok-alert-list">
+            <div class="empty-state"><div class="spinner"></div><p>Memuat...</p></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  Auth.requireAuth('apoteker');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  const user = Auth.getUser();
+  document.getElementById('welcome-name').textContent = user?.name || '-';
+  document.getElementById('today-date').textContent = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  async function loadDashboard() {
+    // Stats
+    const stats = await API.getDashboardStats('apoteker');
+    document.getElementById('stat-total').textContent     = stats.total_prescriptions_today;
+    document.getElementById('stat-queue').textContent     = stats.pending_queue;
+    document.getElementById('stat-dispensed').textContent = stats.total_dispensed_today;
+    document.getElementById('stat-stock-alert').textContent = stats.low_stock_count + stats.out_of_stock_count;
+
+    // Update sidebar badge
+    document.getElementById('badge-antrian').textContent = stats.pending_queue;
+
+    // Antrian masuk
+    const prescriptions = await API.getPrescriptions({ status: 'active' });
+    const antrianDiv = document.getElementById('antrian-list');
+    if (!prescriptions.length) {
+      antrianDiv.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><p>Tidak ada antrian</p></div>';
+    } else {
+      antrianDiv.innerHTML = prescriptions.slice(0, 4).map(p => `
+        <div class="flex-between item-padding-border">
+          <div class="flex-grow-1">
+            <div class="td-main">${p.patient_name}</div>
+            <div class="text-muted-sm">${p.medication_name} &middot; ${p.dosage_value} ${p.dosage_unit} ${p.dosage_timing_code}</div>
+            <div class="text-muted-xs mt-xs">${p.authored_on_display}</div>
+          </div>
+          <div class="flex-center flex-gap-md">
+            ${Utils.paymentBadge(p.payment_type)}
+            <a href="dispense.html?id=${p.id}" class="btn btn-primary btn-sm">Proses</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Stok alert
+    const lowStock = await API.getMedications({ low_stock: true });
+    const stokDiv  = document.getElementById('stok-alert-list');
+    if (!lowStock.length) {
+      stokDiv.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><p>Semua stok aman</p></div>';
+    } else {
+      stokDiv.innerHTML = lowStock.map(m => `
+        <div class="flex-between item-padding-border">
+          <div>
+            <div class="td-main">${m.name}</div>
+            <div class="text-muted-sm">KFA: ${m.kfa_code_93} &middot; ${m.form}</div>
+          </div>
+          <div class="flex-center flex-gap-md">
+            <span class="td-main ${m.stock===0?'text-danger':'text-warning'}">${m.stock} ${m.unit}</span>
+            ${Utils.stockBadge(m.stock, m.min_stock)}
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  loadDashboard();
+  // Auto-refresh antrian tiap 30 detik
+  setInterval(loadDashboard, 30000);
+</script>
+</body>
+</html>

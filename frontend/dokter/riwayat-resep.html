@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Riwayat Resep — SisFarmasi</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body><div class="app-layout">
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></div><div class="logo-text"><span>SisFarmasi</span><span>SatuSehat</span></div></div>
+    <div class="sidebar-user"><div class="user-avatar" id="sidebar-user-avatar">?</div><div class="user-info"><span id="sidebar-user-name">Loading...</span><span id="sidebar-user-role">Dokter</span></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="dashboard.html"     class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span> Dashboard</a>
+      <a href="resep-baru.html"    class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span> Tulis Resep Baru</a>
+      <a href="riwayat-resep.html" class="nav-item active"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Riwayat Resep</a>
+      <div class="nav-section-label nav-section-label-spaced">Referensi</div>
+      <a href="../apoteker/stok.html" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Stok Obat</a>
+    </nav>
+    <div class="sidebar-footer"><div class="nav-item nav-logout" onclick="Auth.logout()"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar</div></div>
+  </div>
+
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Riwayat Resep</h1>
+        <div class="breadcrumb">Dokter / Riwayat Resep</div>
+      </div>
+      <div class="header-right">
+        <div class="header-time" id="live-clock"></div>
+        <a href="resep-baru.html" class="btn btn-primary btn-sm">Tulis Resep Baru</a>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="card">
+        <!-- Toolbar / Filter -->
+        <div class="toolbar">
+          <div class="search-group search-w-260">
+            <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="search-input" class="form-control" placeholder="Cari pasien / obat..." oninput="applyFilter()"/>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Status:</span>
+            <select id="filter-status" class="form-control filter-w-160" title="Filter berdasarkan status resep" onchange="applyFilter()">
+              <option value="">Semua Status</option>
+              <option value="active">Aktif (Menunggu)</option>
+              <option value="completed">Selesai</option>
+              <option value="cancelled">Dibatalkan</option>
+              <option value="on-hold">Ditahan</option>
+            </select>
+          </div>
+          <div class="spacer"></div>
+          <span id="result-count" class="text-muted-sm"></span>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>No. Resep / Item</th>
+                <th>Pasien</th>
+                <th>Nama Obat</th>
+                <th>Kode KFA</th>
+                <th>Dosis & Frekuensi</th>
+                <th>Jml</th>
+                <th>Pembiayaan</th>
+                <th>Tgl Dibuat</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tb-prescriptions">
+              <tr><td colspan="10"><div class="empty-state"><div class="spinner"></div><p>Memuat data...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pagination-info" id="pag-info">-</span>
+          <div class="pagination-controls" id="pag-controls"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Modal Detail -->
+<div class="modal-overlay" id="modal-detail">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-detail-title">Detail Resep</span>
+      <span class="modal-close" onclick="Utils.closeModal('modal-detail')">✕</span>
+    </div>
+    <div class="modal-body" id="modal-detail-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('modal-detail')">Tutup</button>
+      <button class="btn btn-danger hide" id="btn-modal-cancel" onclick="cancelFromModal()">Batalkan Resep</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  Auth.requireAuth('dokter');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  let allPrescriptions = [];
+  let filtered         = [];
+  let currentPage      = 1;
+  const PAGE_SIZE      = 8;
+  let currentDetailId  = null;
+
+  async function loadPrescriptions() {
+    try {
+      allPrescriptions = await API.getPrescriptions();
+      filtered = [...allPrescriptions];
+      render();
+    } catch(e) { Utils.toast('error', 'Gagal memuat', e.message); }
+  }
+
+  function applyFilter() {
+    const q      = document.getElementById('search-input').value.toLowerCase();
+    const status = document.getElementById('filter-status').value;
+    filtered = allPrescriptions.filter(p => {
+      const matchQ = !q || p.patient_name.toLowerCase().includes(q) || p.medication_name.toLowerCase().includes(q) || p.prescription_number.toLowerCase().includes(q);
+      const matchS = !status || p.status === status;
+      return matchQ && matchS;
+    });
+    currentPage = 1;
+    render();
+  }
+
+  function render() {
+    const start  = (currentPage - 1) * PAGE_SIZE;
+    const page   = filtered.slice(start, start + PAGE_SIZE);
+    const tb     = document.getElementById('tb-prescriptions');
+    document.getElementById('result-count').textContent = `${filtered.length} resep ditemukan`;
+
+    if (!page.length) { tb.innerHTML = Utils.emptyRow(10, 'Tidak ada resep yang sesuai filter'); return; }
+
+    tb.innerHTML = page.map(p => `
+      <tr>
+        <td><div class="td-main">${p.prescription_number}</div><div class="td-sub">${p.prescription_item_number}</div></td>
+        <td><div class="td-main">${p.patient_name}</div><div class="td-sub">NIK: ${p.patient_nik}</div></td>
+        <td><div class="td-main">${p.medication_name}</div><div class="td-sub">${p.medication_form}</div></td>
+        <td>${Utils.kfaTag(p.medication_kfa)}</td>
+        <td><div class="td-main">${p.dosage_value} ${p.dosage_unit}</div><div class="td-sub">${p.dosage_timing_code} &middot; ${p.dosage_route.display}</div></td>
+        <td>${p.quantity} ${p.quantity_unit}</td>
+        <td>${Utils.paymentBadge(p.payment_type)}</td>
+        <td>${p.authored_on_display}</td>
+        <td>${Utils.statusBadge(p.status)}</td>
+        <td>
+          <div class="flex-gap-sm">
+            <button class="btn btn-outline-teal btn-sm" onclick="showDetail('${p.id}')">Detail</button>
+            ${p.status === 'active' ? `<button class="btn btn-danger btn-sm" onclick="cancelResep('${p.id}')">Batal</button>` : ''}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    // Pagination
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    document.getElementById('pag-info').textContent = `Halaman ${currentPage} dari ${totalPages} (${filtered.length} total)`;
+    const ctrl = document.getElementById('pag-controls');
+    ctrl.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+      btn.textContent = i;
+      btn.onclick = () => { currentPage = i; render(); };
+      ctrl.appendChild(btn);
+    }
+  }
+
+  async function showDetail(id) {
+    currentDetailId = id;
+    const p = await API.getPrescription(id);
+    document.getElementById('modal-detail-title').textContent = `Detail Resep — ${p.prescription_number}`;
+    document.getElementById('btn-modal-cancel').style.display = p.status === 'active' ? 'inline-flex' : 'none';
+    document.getElementById('modal-detail-body').innerHTML = `
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>No. Resep</label><div class="info-value">${p.prescription_number}</div></div>
+        <div class="info-item"><label>No. Item Resep</label><div class="info-value">${p.prescription_item_number}</div></div>
+        <div class="info-item"><label>Status</label><div class="info-value">${Utils.statusBadge(p.status)}</div></div>
+        <div class="info-item"><label>Dibuat</label><div class="info-value">${p.authored_on_display}</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nama Pasien</label><div class="info-value">${p.patient_name}</div></div>
+        <div class="info-item"><label>NIK</label><div class="info-value">${p.patient_nik}</div></div>
+        <div class="info-item"><label>IHS Number</label><div class="info-value">${Utils.kfaTag(p.patient_ihs_number)}</div></div>
+        <div class="info-item"><label>Pembiayaan</label><div class="info-value">${Utils.paymentBadge(p.payment_type)}${p.sep_number ? ` <small class="text-muted-xs"> SEP: ${p.sep_number}</small>` : ''}</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nama Obat</label><div class="info-value">${p.medication_name}</div></div>
+        <div class="info-item"><label>Bentuk</label><div class="info-value">${p.medication_form}</div></div>
+        <div class="info-item"><label>Kode KFA</label><div class="info-value">${Utils.kfaTag(p.medication_kfa)}</div></div>
+        <div class="info-item"><label>Jumlah</label><div class="info-value">${p.quantity} ${p.quantity_unit}</div></div>
+        <div class="info-item"><label>Rute</label><div class="info-value">${p.dosage_route.display}</div></div>
+        <div class="info-item"><label>Dosis</label><div class="info-value">${p.dosage_value} ${p.dosage_unit}</div></div>
+        <div class="info-item"><label>Frekuensi</label><div class="info-value"><span class="tag tag-teal">${p.dosage_timing_code}</span></div></div>
+        <div class="info-item"><label>Durasi</label><div class="info-value">${p.expected_supply_days || '-'} hari</div></div>
+        <div class="info-item grid-col-full"><label>Aturan Tambahan</label><div class="info-value">${p.dosage_additional_instruction || '-'}</div></div>
+        <div class="info-item grid-col-full"><label>Catatan Resep</label><div class="info-value">${p.note || '-'}</div></div>
+      </div>
+      ${p.status === 'cancelled' && p.status_reason ? `<div class="alert alert-danger"><span class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><div><strong>Alasan Pembatalan:</strong> ${p.status_reason}</div></div>` : ''}
+    `;
+    Utils.openModal('modal-detail');
+  }
+
+  async function cancelResep(id) {
+    const reason = prompt('Masukkan alasan pembatalan:');
+    if (!reason) return;
+    try {
+      await API.cancelPrescription(id, reason);
+      Utils.toast('success', 'Resep Dibatalkan');
+      loadPrescriptions();
+    } catch(e) { Utils.toast('error', 'Gagal', e.message); }
+  }
+
+  async function cancelFromModal() {
+    Utils.closeModal('modal-detail');
+    await cancelResep(currentDetailId);
+  }
+
+  loadPrescriptions();
+</script>
+</body>
+</html>

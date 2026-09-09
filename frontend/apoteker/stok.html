@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manajemen Stok Obat — SisFarmasi</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+<div class="app-layout">
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></div><div class="logo-text"><span>SisFarmasi</span><span>SatuSehat</span></div></div>
+    <div class="sidebar-user"><div class="user-avatar" id="sidebar-user-avatar">?</div><div class="user-info"><span id="sidebar-user-name">Loading...</span><span id="sidebar-user-role">Apoteker</span></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span> Dashboard</a>
+      <a href="antrian.html"   class="nav-item"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"></path></svg></span> Antrian Resep</a>
+      <a href="riwayat.html"   class="nav-item"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span> Riwayat Dispense</a>
+      <a href="stok.html"      class="nav-item active"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path></svg></span> Stok Obat</a>
+    </nav>
+    <div class="sidebar-footer"><div class="nav-item nav-logout" onclick="Auth.logout()"><span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span> Keluar</div></div>
+  </div>
+
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Manajemen Stok Obat</h1>
+        <div class="breadcrumb">Apoteker / Stok Obat</div>
+      </div>
+      <div class="header-right"><div class="header-time" id="live-clock"></div></div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- Stat mini -->
+      <div class="stat-cards-4">
+        <div class="stat-card">
+          <div class="stat-card-info"><div class="stat-label">Total Jenis Obat</div><div class="stat-value" id="s-total">-</div></div>
+          <div class="stat-icon teal"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path></svg></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-info"><div class="stat-label">Stok Aman</div><div class="stat-value" id="s-aman">-</div></div>
+          <div class="stat-icon green"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-info"><div class="stat-label">Stok Menipis</div><div class="stat-value" id="s-menipis">-</div></div>
+          <div class="stat-icon yellow"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-info"><div class="stat-label">Stok Habis</div><div class="stat-value" id="s-habis">-</div></div>
+          <div class="stat-icon red"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <div class="search-group search-w-260">
+            <span class="search-icon"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+            <input type="text" id="search-input" class="form-control" placeholder="Cari nama obat / KFA..." oninput="applyFilter()"/>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Filter:</span>
+            <select id="filter-stok" class="form-control filter-w-150" title="Filter berdasarkan status stok" onchange="applyFilter()">
+              <option value="">Semua Stok</option>
+              <option value="aman">Aman</option>
+              <option value="menipis">Menipis</option>
+              <option value="habis">Habis</option>
+            </select>
+          </div>
+          <div class="spacer"></div>
+          <span id="result-count" class="result-count"></span>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Obat</th>
+                <th>Kode KFA (Resep / Dispense)</th>
+                <th>Bentuk Sediaan</th>
+                <th>Produsen</th>
+                <th>Stok</th>
+                <th>Min. Stok</th>
+                <th>No. Lot</th>
+                <th>Exp. Date</th>
+                <th>Harga</th>
+                <th>Tipe</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tb-stok">
+              <tr><td colspan="11"><div class="empty-state"><div class="spinner"></div><p>Memuat stok...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  // Stok ini bisa diakses juga oleh dokter (read-only)
+  const role = localStorage.getItem('farmasi_user') ? JSON.parse(localStorage.getItem('farmasi_user')).role : null;
+  if (!role) window.location.href = '../index.html';
+  if (role === 'dokter') {
+    document.querySelectorAll('[id^="sidebar-user"]').length && Auth.renderUserInfo();
+    // Ganti label sidebar untuk dokter
+  }
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  let allMeds = [];
+  let filtered = [];
+
+  async function loadStok() {
+    try {
+      allMeds  = await API.getMedications();
+      filtered = [...allMeds];
+      renderStats();
+      render();
+    } catch(e) { Utils.toast('error', 'Gagal', e.message); }
+  }
+
+  function renderStats() {
+    const aman    = allMeds.filter(m => m.stock > m.min_stock).length;
+    const menipis = allMeds.filter(m => m.stock > 0 && m.stock <= m.min_stock).length;
+    const habis   = allMeds.filter(m => m.stock === 0).length;
+    document.getElementById('s-total').textContent   = allMeds.length;
+    document.getElementById('s-aman').textContent    = aman;
+    document.getElementById('s-menipis').textContent = menipis;
+    document.getElementById('s-habis').textContent   = habis;
+  }
+
+  function applyFilter() {
+    const q     = document.getElementById('search-input').value.toLowerCase();
+    const stok  = document.getElementById('filter-stok').value;
+    filtered    = allMeds.filter(m => {
+      const matchQ = !q || m.name.toLowerCase().includes(q) || m.kfa_code_92.includes(q) || m.kfa_code_93.includes(q) || m.generic_name.toLowerCase().includes(q);
+      const aman    = m.stock > m.min_stock;
+      const menipis = m.stock > 0 && m.stock <= m.min_stock;
+      const habis   = m.stock === 0;
+      const matchS  = !stok || (stok === 'aman' && aman) || (stok === 'menipis' && menipis) || (stok === 'habis' && habis);
+      return matchQ && matchS;
+    });
+    render();
+  }
+
+  function render() {
+    const tb = document.getElementById('tb-stok');
+    document.getElementById('result-count').textContent = `${filtered.length} obat`;
+
+    if (!filtered.length) { tb.innerHTML = Utils.emptyRow(11, 'Tidak ada obat yang sesuai filter'); return; }
+
+    tb.innerHTML = filtered.map(m => {
+      const expiring = new Date(m.expiration_date) < new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
+      return `
+        <tr>
+          <td>
+            <div class="td-main">${m.name}</div>
+            <div class="td-sub">${m.generic_name}</div>
+          </td>
+          <td>
+            <div class="td-sub col-flex">
+              <div class="text-muted-xs">Resep (92): ${Utils.kfaTag(m.kfa_code_92)}</div>
+              <div class="text-muted-xs">Dispense (93): ${Utils.kfaTag(m.kfa_code_93)}</div>
+            </div>
+          </td>
+          <td>${m.form}</td>
+          <td>${m.manufacturer}</td>
+          <td>
+            <div class="text-lg-bold ${m.stock===0?'text-stock-danger':m.stock<=m.min_stock?'text-stock-warning':'text-stock-normal'}">
+              ${Utils.formatNumber(m.stock)}
+            </div>
+            <div class="td-sub">${m.unit}</div>
+          </td>
+          <td>${m.min_stock} ${m.unit}</td>
+          <td><span class="td-mono">${m.lot_number}</span></td>
+          <td class="${expiring?'text-warning':''}">
+            ${Utils.formatDate(m.expiration_date)}
+            ${expiring ? '<div class="td-sub text-warning">Segera exp</div>' : ''}
+          </td>
+          <td>${Utils.formatCurrency(m.price)}</td>
+          <td><span class="tag ${m.medication_type === 'formularium' ? 'tag-teal' : ''}">${m.medication_type}</span></td>
+          <td>${Utils.stockBadge(m.stock, m.min_stock)}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  loadStok();
+</script>
+</body>
+</html>
