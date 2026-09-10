@@ -106,7 +106,7 @@ const requireRole = (...roles) => {
 // 3. POST /api/login
 // ─────────────────────────────────────────────────────────────
 app.post('/api/login', async (req, res) => {
-    const username = (req.body.username || req.body.email || '').trim();
+    const username = (req.body.username || '').trim();
     const password = req.body.password;
 
     if (!username || !password) {
