@@ -3,9 +3,15 @@ const mysql = require('mysql2');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
+const {
+    syncPatientToSatuSehat,
+    syncPrescriptionToSatuSehat,
+    syncDispenseToSatuSehat
+} = require('./services/satusehat/integrationManager');
+
 const app = express();
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
 // 1. KONEKSI KE KULKAS (DATABASE MySQL)
 let isDbConnected = false;
@@ -492,7 +498,44 @@ app.get('/api/users', (req, res) => {
 app.get('/api/activities', (req, res) => {
     res.json(memStore.activities);
 });
+// ==========================================
+// API SIMPAN RESEP + OTOMATIS KIRIM KE SATUSEHAT
+// ==========================================
+app.post('/api/prescriptions', async (req, res) => {
+    const { nomor_resep, patient_ihs_number, medication_kfa } = req.body;
 
+    // 1. Simpan ke database MySQL (Tabel buatan Varel)
+    const sql = "INSERT INTO prescriptions (nomor_resep, patient_ihs_number, medication_kfa) VALUES (?, ?, ?)";
+    
+    db.query(sql, [nomor_resep, patient_ihs_number, medication_kfa], async (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        // 2. Bungkus data untuk dikirim ke fungsi Naira
+        const dataResep = {
+            nomor_resep: nomor_resep,
+            ihs_patient_id: patient_ihs_number,
+            id_kfa_obat: medication_kfa
+        };
+
+        // 3. Kirim ke SATUSEHAT lewat fungsi Naira
+        const hasilSatuSehat = await syncPrescriptionToSatuSehat(dataResep);
+
+        if (hasilSatuSehat.success) {
+            console.log("Sukses masuk SATUSEHAT! ID:", hasilSatuSehat.satusehat_id);
+        } else {
+            console.error("Gagal kirim ke SATUSEHAT:", hasilSatuSehat.raw_error);
+        }
+
+        // 4. Respon balik ke Frontend (Sheren/Kajil)
+        res.json({
+            message: "Resep berhasil disimpan",
+            prescription_id: result.insertId,
+            satusehat: hasilSatuSehat
+        });
+    });
+});
 // Menyalakan Server Backend di Port 3000
 const PORT = 3000;
 app.listen(PORT, () => {
