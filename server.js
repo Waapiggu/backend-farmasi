@@ -110,6 +110,97 @@ function checkFallbackLogin(identifier, password, res) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// REGISTRASI (DAFTAR AKUN BARU)
+// ─────────────────────────────────────────────────────────────
+app.post('/api/register', (req, res) => {
+    const data = req.body;
+    
+    if (isDbConnected) {
+        db.query("SELECT id FROM users WHERE email = ?", [data.email], (err, results) => {
+            if (err) return res.status(500).json({ pesan: err.message });
+            if (results.length > 0) return res.status(400).json({ pesan: "Email sudah terdaftar!" });
+            
+            insertUserDb(data, res);
+        });
+    } else {
+        const exists = memStore.users.find(u => u.email.toLowerCase() === data.email.toLowerCase());
+        if (exists) return res.status(400).json({ pesan: "Email sudah terdaftar!" });
+        
+        insertUserMemStore(data, res);
+    }
+});
+
+function insertUserDb(data, res) {
+    const newId = 'USR-' + Date.now();
+    
+    db.beginTransaction(err => {
+        if (err) return res.status(500).json({ pesan: err.message });
+        
+        let npa = null, sipa = null, nik = null, ihs_number = null;
+        if (data.role === 'dokter') npa = data.npa;
+        if (data.role === 'apoteker') sipa = data.sipa;
+        if (data.role === 'pasien') {
+            nik = data.nik;
+            ihs_number = data.ihs_number || ('P0' + Math.floor(Math.random()*1000000000));
+        }
+
+        const sqlUser = "INSERT INTO users (id, name, email, password, role, npa, sipa, nik, ihs_number, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        db.query(sqlUser, [newId, data.name, data.email, data.password, data.role, npa, sipa, nik, ihs_number, data.phone], (err) => {
+            if (err) {
+                return db.rollback(() => res.status(500).json({ pesan: err.message }));
+            }
+            
+            if (data.role === 'pasien') {
+                const sqlPatient = "INSERT INTO patients (nik, ihs_number, name, gender, dob, address) VALUES (?, ?, ?, ?, ?, ?)";
+                db.query(sqlPatient, [nik, ihs_number, data.name, data.gender, data.dob, data.address], (err) => {
+                    if (err) {
+                        return db.rollback(() => res.status(500).json({ pesan: err.message }));
+                    }
+                    db.commit(err => {
+                        if (err) return db.rollback(() => res.status(500).json({ pesan: err.message }));
+                        insertUserMemStore(data, res, true); 
+                    });
+                });
+            } else {
+                db.commit(err => {
+                    if (err) return db.rollback(() => res.status(500).json({ pesan: err.message }));
+                    insertUserMemStore(data, res, true);
+                });
+            }
+        });
+    });
+}
+
+function insertUserMemStore(data, res, isFromDb = false) {
+    const newId = 'USR-' + String(memStore.users.length + 1).padStart(3, '0');
+    
+    let npa = null, sipa = null, nik = null, ihs_number = null;
+    if (data.role === 'dokter') npa = data.npa;
+    if (data.role === 'apoteker') sipa = data.sipa;
+    if (data.role === 'pasien') {
+        nik = data.nik;
+        ihs_number = data.ihs_number || ('P0' + Math.floor(Math.random()*1000000000));
+        
+        memStore.patients.push({
+            nik, ihs_number, name: data.name, gender: data.gender, dob: data.dob, address: data.address
+        });
+    }
+
+    const newUser = {
+        id: newId, name: data.name, email: data.email, password: data.password, role: data.role,
+        npa, sipa, nik, ihs_number, phone: data.phone
+    };
+    
+    memStore.users.push(newUser);
+    
+    if (!isFromDb) {
+        res.json({ success: true, message: "Pendaftaran berhasil", user: newUser });
+    } else {
+        res.json({ success: true, message: "Pendaftaran berhasil (tersimpan di DB)", user: newUser });
+    }
+}
+
+// ─────────────────────────────────────────────────────────────
 // 3. MASTER OBAT & KFA (MEDICATIONS)
 // ─────────────────────────────────────────────────────────────
 app.get('/api/medications', (req, res) => {

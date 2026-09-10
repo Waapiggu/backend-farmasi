@@ -63,6 +63,48 @@ const API = (() => {
     return { token: 'mock-jwt-' + user.role, user };
   }
 
+  async function register(data) {
+    const live = await liveFetch('POST', '/register', data);
+    if (live) return live;
+
+    // Fallback Mock
+    await delay(DELAY);
+    // Cek duplikasi email
+    if (MOCK_DATA.users.find(u => u.email.toLowerCase() === data.email.toLowerCase())) {
+      throw new Error('Email sudah terdaftar.');
+    }
+    
+    // Create new User
+    const newUser = {
+      id: 'USR-' + String(MOCK_DATA.users.length + 1).padStart(3, '0'),
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: data.role,
+      phone: data.phone
+    };
+    
+    if (data.role === 'dokter') newUser.npa = data.npa;
+    if (data.role === 'apoteker') newUser.sipa = data.sipa;
+    if (data.role === 'pasien') {
+      newUser.nik = data.nik;
+      newUser.ihs_number = data.ihs_number || ('P0' + Math.floor(Math.random()*1000000000));
+      
+      // Simpan ke mock patients juga
+      MOCK_DATA.patients.push({
+        nik: data.nik,
+        ihs_number: newUser.ihs_number,
+        name: data.name,
+        gender: data.gender,
+        dob: data.dob,
+        address: data.address
+      });
+    }
+    
+    MOCK_DATA.users.push(newUser);
+    return { success: true, message: 'Registrasi berhasil', user: newUser };
+  }
+
   // ─── MEDICATIONS ─────────────────────────────────────
   async function getMedications({ search = '', low_stock = false } = {}) {
     const params = new URLSearchParams({ search, low_stock });
@@ -323,6 +365,7 @@ const API = (() => {
   // Public API
   return { 
     login, 
+    register,
     getMedications, 
     getMedication, 
     getPatients, 
