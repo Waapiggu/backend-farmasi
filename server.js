@@ -933,12 +933,21 @@ app.post('/api/satusehat/sync-patient', authenticateToken, async (req, res) => {
 // ─────────────────────────────────────────────────────────────
 // 15. JALANKAN SERVER
 // ─────────────────────────────────────────────────────────────
+const { exec } = require('child_process');
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-    console.log(`--> Server berjalan di http://localhost:${PORT}`);
+    const url = `http://localhost:${PORT}`;
+    console.log(`--> Server berjalan di ${url}`);
     console.log('--> Endpoint Role: ADMIN, DOKTER, APOTEKER, PASIEN');
-    console.log(`--> [Phase 1] GET  http://localhost:${PORT}/api/obat`);
-    console.log(`--> [Phase 2] POST http://localhost:${PORT}/api/login`);
-    console.log(`--> [Phase 2] GET  http://localhost:${PORT}/api/users  (ADMIN only)`);
-    console.log(`--> [Phase 2] GET  http://localhost:${PORT}/api/me`);
+    console.log(`--> [Phase 1] GET  ${url}/api/obat`);
+    console.log(`--> [Phase 2] POST ${url}/api/login`);
+    console.log(`--> [Phase 2] GET  ${url}/api/users  (ADMIN only)`);
+    console.log(`--> [Phase 2] GET  ${url}/api/me`);
+
+    // Buka browser secara otomatis
+    const startCmd = process.platform === 'win32' ? 'start' : process.platform === 'darwin' ? 'open' : 'xdg-open';
+    exec(`${startCmd} ${url}`).on('error', (err) => {
+        console.error('--> [WARNING] Gagal membuka browser secara otomatis:', err.message);
+    });
 });

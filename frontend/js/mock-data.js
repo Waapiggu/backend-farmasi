@@ -137,6 +137,24 @@ const MOCK_DATA = {
       min_stock: 15
     },
     {
+      id: 'MED-004B',
+      kfa_code_92: '92008888',
+      kfa_code_93: '93008888',
+      kfa_system: 'http://sys-ids.kemkes.go.id/kfa',
+      name: 'Lansoprazole 30mg Kapsul',
+      generic_name: 'Lansoprazole',
+      ingredient_code: '91000499',
+      form: 'Kapsul',
+      manufacturer: 'Dexa Medica',
+      stock: 50,
+      unit: 'Kotak (30 kapsul)',
+      lot_number: 'LOT2026L001',
+      expiration_date: '2027-10-15',
+      medication_type: 'formularium',
+      price: 25000,
+      min_stock: 10
+    },
+    {
       id: 'MED-005',
       kfa_code_92: '92003300',
       kfa_code_93: '93009999',

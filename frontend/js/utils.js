@@ -57,6 +57,12 @@ const Utils = {
     return `<span class="badge badge-ok">Aman</span>`;
   },
 
+  simpleStockBadge(stock, minStock) {
+    if (stock === 0)           return `<span class="badge badge-empty">Kosong</span>`;
+    if (stock <= minStock)     return `<span class="badge badge-low">Stok Terbatas</span>`;
+    return `<span class="badge badge-ok">Tersedia</span>`;
+  },
+
   paymentBadge(type) {
     const map = {
       'BPJS-K':          { cls: 'badge-active',    label: 'BPJS-K' },
@@ -66,6 +72,22 @@ const Utils = {
     };
     const s = map[type] || { cls: 'badge-stopped', label: type };
     return `<span class="badge ${s.cls}">${s.label}</span>`;
+  },
+
+  timingLabel(code) {
+    const map = {
+      'QD': '1x sehari',
+      'BID': '2x sehari',
+      'TID': '3x sehari',
+      'QID': '4x sehari',
+      'Q6H': 'Tiap 6 jam',
+      'Q8H': 'Tiap 8 jam',
+      'Q12H': 'Tiap 12 jam',
+      'AM': 'Pagi hari',
+      'PM': 'Malam hari',
+      'PRN': 'Bila perlu'
+    };
+    return map[code] || code;
   },
 
   // ─── Format Angka & Mata Uang ────────────────────────
