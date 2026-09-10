@@ -140,7 +140,7 @@
 
     try {
       const res = await API.login(email, password, selectedRole);
-      Auth.login(res.user);
+      Auth.login(res.user, res.token);
       Utils.toast('success', 'Login Berhasil', `Selamat datang, ${res.user.name}`);
       setTimeout(() => {
         window.location.href = res.user.role === 'dokter' ? 'dokter/dashboard.html' : 'apoteker/dashboard.html';

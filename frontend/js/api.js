@@ -27,13 +27,16 @@ const API = (() => {
 
   // ─── AUTH ─────────────────────────────────────────────
   async function login(email, password, role) {
-    if (USE_MOCK) {
-      await delay(DELAY);
-      const user = MOCK_DATA.users.find(u => u.email === email && u.password === password && u.role === role);
-      if (!user) throw new Error('Email, password, atau role tidak sesuai.');
-      return { token: 'mock-jwt-' + user.role, user };
-    }
-    return liveFetch('POST', '/login', { email, password });
+    // Bypassing MOCK untuk menghubungkan dengan API Backend
+    const res = await liveFetch('POST', '/login', { email, password });
+    return {
+      token: res.token,
+      user: {
+        email: email,
+        role: res.role,
+        name: res.role === 'dokter' ? 'Dokter (Backend)' : 'Apoteker (Backend)'
+      }
+    };
   }
 
   // ─── MEDICATIONS ─────────────────────────────────────
@@ -97,23 +100,15 @@ const API = (() => {
   }
 
   async function createPrescription(data) {
-    if (USE_MOCK) {
-      await delay(DELAY);
-      const newId = 'MR-' + String(MOCK_DATA.prescriptions.length + 1).padStart(3, '0');
-      const num   = 'RX-2026-' + String(MOCK_DATA.prescriptions.length + 1).padStart(4, '0');
-      const record = {
-        id: newId,
-        prescription_number: num,
-        prescription_item_number: 'RXI-2026-' + String(MOCK_DATA.prescriptions.length + 1).padStart(4, '0'),
-        status: 'active',
-        authored_on: Utils.nowUTC(),
-        authored_on_display: Utils.formatDateTime(new Date().toISOString()),
-        ...data
-      };
-      MOCK_DATA.prescriptions.push(record);
-      return { success: true, data: record, message: 'Resep berhasil dikirim ke Apoteker!' };
-    }
-    return liveFetch('POST', '/prescriptions', data);
+    // Bypassing MOCK untuk menghubungkan dengan API Backend (/api/resep)
+    const res = await liveFetch('POST', '/resep', {
+      medication_id: data.medication_id,
+      quantity: data.quantity
+    });
+    
+    // Tetap buat mock ID agar UI frontend tidak error jika membutuhkan data balikan
+    const newId = 'MR-L-' + Date.now().toString().slice(-4);
+    return { success: true, data: { id: newId }, message: res.pesan || 'Resep berhasil dikirim' };
   }
 
   async function cancelPrescription(id, reason) {
@@ -139,26 +134,13 @@ const API = (() => {
   }
 
   async function createDispense(data) {
-    if (USE_MOCK) {
-      await delay(DELAY);
-      // Update prescription status
-      const presc = MOCK_DATA.prescriptions.find(p => p.id === data.prescription_id);
-      if (presc) presc.status = 'completed';
-      // Kurangi stok
-      const med = MOCK_DATA.medications.find(m => m.id === data.medication_id);
-      if (med) med.stock = Math.max(0, med.stock - data.quantity);
-
-      const newDispense = {
-        id: 'MD-' + String(MOCK_DATA.dispenses.length + 1).padStart(3, '0'),
-        dispensed_at: Utils.nowUTC(),
-        dispensed_at_display: Utils.formatDateTime(new Date().toISOString()),
-        status: 'completed',
-        ...data
-      };
-      MOCK_DATA.dispenses.push(newDispense);
-      return { success: true, data: newDispense, message: 'Obat berhasil diserahkan!' };
-    }
-    return liveFetch('POST', '/dispense', data);
+    // Bypassing MOCK untuk menghubungkan dengan API Backend (/api/dispense)
+    const res = await liveFetch('POST', '/dispense', {
+      prescription_id: data.prescription_id
+    });
+    
+    const newId = 'MD-L-' + Date.now().toString().slice(-4);
+    return { success: true, data: { id: newId }, message: res.pesan || 'Obat berhasil diserahkan' };
   }
 
   // ─── DASHBOARD STATS ─────────────────────────────────

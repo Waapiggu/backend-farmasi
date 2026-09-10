@@ -4,9 +4,9 @@
 
 const Auth = {
   // Simpan sesi login ke localStorage
-  login(userData) {
+  login(userData, token) {
     localStorage.setItem('farmasi_user', JSON.stringify(userData));
-    localStorage.setItem('farmasi_token', 'mock-jwt-token-' + userData.role);
+    localStorage.setItem('farmasi_token', token || ('mock-jwt-token-' + userData.role));
   },
 
   logout() {
