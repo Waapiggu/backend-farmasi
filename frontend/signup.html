@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pendaftaran Akun — SisFarmasi SatuSehat</title>
+  <meta name="description" content="Pendaftaran akun Sistem Manajemen Pelayanan Kefarmasian"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .role-option { flex: 1; text-align: center; padding: 12px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; background: white; }
+    .role-option:hover { border-color: var(--teal-300); background: var(--teal-50); }
+    .role-option.selected { border-color: var(--teal-500); background: var(--teal-50); box-shadow: 0 0 0 1px var(--teal-500); }
+    .role-option .role-icon { margin: 0 auto 8px; color: var(--gray-500); }
+    .role-option.selected .role-icon { color: var(--teal-600); }
+    .role-option .role-name { font-size: 13px; font-weight: 600; color: var(--gray-800); }
+    .role-option.selected .role-name { color: var(--teal-800); }
+    
+    .dynamic-fields { display: none; background: var(--gray-50); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--gray-200); margin-top: 10px; margin-bottom: 20px; }
+    .dynamic-fields.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+<div class="login-page">
+  <!-- Left Panel: Branding -->
+  <div class="login-left bg-gradient-signup">
+    <div class="login-brand">
+      <div class="brand-logo brand-logo-signup">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+      </div>
+      <h1>Gabung SisFarmasi</h1>
+      <p>Buat akun Anda dan nikmati kemudahan manajemen resep elektronik terintegrasi SatuSehat Kemenkes RI.</p>
+    </div>
+
+    <div class="login-features">
+      <div class="login-feature">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <div class="feat-text">
+          <span>Satu Akun, Multi Peran</span>
+          <span>Sistem menyesuaikan antarmuka sesuai role Anda (Dokter, Apoteker, Pasien).</span>
+        </div>
+      </div>
+      <div class="login-feature">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="feat-text">
+          <span>Keamanan Data</span>
+          <span>Data sensitif tersimpan aman dan divalidasi sesuai standar regulasi.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel: Registration Form -->
+  <div class="login-right login-right-scroll">
+    <div class="login-form-container signup-form-max">
+      <p class="form-title">Pendaftaran Akun Baru</p>
+      <p class="form-subtitle">Lengkapi formulir di bawah untuk membuat akun baru</p>
+
+      <!-- Role Selector -->
+      <div class="form-group mb-20">
+        <label>Pilih Peran (Role) Anda <span class="required">*</span></label>
+        <div class="flex-gap-10-mt8">
+          <div class="role-option selected" data-role="pasien" onclick="selectRole('pasien', this)">
+            <div class="role-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="role-name">Pasien</div>
+          </div>
+          <div class="role-option" data-role="dokter" onclick="selectRole('dokter', this)">
+            <div class="role-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div class="role-name">Dokter</div>
+          </div>
+          <div class="role-option" data-role="apoteker" onclick="selectRole('apoteker', this)">
+            <div class="role-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg></div>
+            <div class="role-name">Apoteker</div>
+          </div>
+          <div class="role-option" data-role="admin" onclick="selectRole('admin', this)">
+            <div class="role-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <div class="role-name">Admin</div>
+          </div>
+        </div>
+      </div>
+
+      <form id="register-form" onsubmit="handleRegister(event)">
+        <!-- Data Umum -->
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="name">Nama Lengkap <span class="required">*</span></label>
+            <input type="text" id="name" class="form-control" placeholder="Nama Lengkap" required/>
+          </div>
+          <div class="form-group">
+            <label for="phone">No. WhatsApp <span class="required">*</span></label>
+            <input type="text" id="phone" class="form-control" placeholder="0812..." required/>
+          </div>
+          <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" class="form-control" placeholder="email@contoh.com" required/>
+          </div>
+          <div class="form-group">
+            <label for="password">Password <span class="required">*</span></label>
+            <input type="password" id="password" class="form-control" placeholder="Minimal 6 karakter" required minlength="6"/>
+          </div>
+        </div>
+
+        <!-- Dynamic Fields Container -->
+        <div id="fields-pasien" class="dynamic-fields active">
+          <p class="dynamic-fields-title">Data Demografi Pasien (SatuSehat)</p>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="nik">NIK (Nomor Induk Kependudukan) <span class="required">*</span></label>
+              <input type="text" id="nik" class="form-control" placeholder="16 digit NIK" maxlength="16"/>
+            </div>
+            <div class="form-group">
+              <label for="ihs_number">Nomor IHS (SatuSehat ID)</label>
+              <input type="text" id="ihs_number" class="form-control" placeholder="(Opsional) ex: P024..."/>
+              <span class="form-hint">Kosongkan jika belum tahu, akan otomatis di-generate/sync.</span>
+            </div>
+            <div class="form-group">
+              <label for="gender">Jenis Kelamin <span class="required">*</span></label>
+              <select id="gender" class="form-control">
+                <option value="">Pilih</option>
+                <option value="L">Laki-laki</option>
+                <option value="P">Perempuan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="dob">Tanggal Lahir <span class="required">*</span></label>
+              <input type="date" id="dob" class="form-control"/>
+            </div>
+            <div class="form-group full">
+              <label for="address">Alamat Lengkap <span class="required">*</span></label>
+              <textarea id="address" class="form-control" rows="2" placeholder="Jl. Contoh No.123..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="fields-dokter" class="dynamic-fields">
+          <p class="dynamic-fields-title">Data Profesi Dokter</p>
+          <div class="form-group">
+            <label for="npa">NPA (Nomor Pokok Anggota) IDI <span class="required">*</span></label>
+            <input type="text" id="npa" class="form-control" placeholder="Masukkan NPA IDI"/>
+          </div>
+        </div>
+
+        <div id="fields-apoteker" class="dynamic-fields">
+          <p class="dynamic-fields-title">Data Profesi Apoteker</p>
+          <div class="form-group">
+            <label for="sipa">SIPA (Surat Izin Praktik Apoteker) <span class="required">*</span></label>
+            <input type="text" id="sipa" class="form-control" placeholder="Masukkan nomor SIPA"/>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-login btn-lg w-100 mt-10" id="btn-register">
+          <span id="btn-register-text">Daftar Akun</span>
+        </button>
+      </form>
+
+      <div class="login-footer mt-30">
+        <p>Sudah punya akun? <a href="index.html" class="link-staf-medis">Masuk di sini</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="js/utils.js"></script>
+<script src="js/api.js"></script>
+<script>
+  let selectedRole = 'pasien';
+
+  function selectRole(role, el) {
+    selectedRole = role;
+    
+    // Update active class on options
+    document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+
+    // Hide all dynamic fields
+    document.querySelectorAll('.dynamic-fields').forEach(f => {
+      f.classList.remove('active');
+      // remove required attribute from inputs inside hidden fields
+      f.querySelectorAll('input, select, textarea').forEach(input => input.removeAttribute('required'));
+    });
+
+    // Show selected dynamic field
+    const activeField = document.getElementById(`fields-${role}`);
+    if (activeField) {
+      activeField.classList.add('active');
+      // add required attribute back
+      activeField.querySelectorAll('input[id], select[id], textarea[id]').forEach(input => {
+        if(input.id !== 'ihs_number') { // ihs_number is optional
+          input.setAttribute('required', 'true');
+        }
+      });
+    }
+  }
+
+  // Initial required setup
+  document.querySelectorAll('#fields-pasien input[id], #fields-pasien select[id], #fields-pasien textarea[id]').forEach(input => {
+    if(input.id !== 'ihs_number') input.setAttribute('required', 'true');
+  });
+
+  async function handleRegister(e) {
+    e.preventDefault();
+    
+    const payload = {
+      name: document.getElementById('name').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      password: document.getElementById('password').value,
+      role: selectedRole
+    };
+
+    if (selectedRole === 'dokter') {
+      payload.npa = document.getElementById('npa').value.trim();
+    } else if (selectedRole === 'apoteker') {
+      payload.sipa = document.getElementById('sipa').value.trim();
+    } else if (selectedRole === 'pasien') {
+      payload.nik = document.getElementById('nik').value.trim();
+      payload.ihs_number = document.getElementById('ihs_number').value.trim();
+      payload.gender = document.getElementById('gender').value;
+      payload.dob = document.getElementById('dob').value;
+      payload.address = document.getElementById('address').value.trim();
+    }
+
+    const btn = document.getElementById('btn-register');
+    const btnText = document.getElementById('btn-register-text');
+
+    btn.disabled = true;
+    btnText.innerHTML = '<span class="spinner spinner-sm"></span> Mendaftarkan...';
+
+    try {
+      const res = await API.register(payload);
+      Utils.toast('success', 'Pendaftaran Berhasil', 'Akun Anda berhasil dibuat. Silakan login.');
+      setTimeout(() => {
+        if (selectedRole === 'pasien') {
+            window.location.href = 'pasien/login.html';
+        } else {
+            window.location.href = 'index.html';
+        }
+      }, 1500);
+    } catch (err) {
+      Utils.toast('error', 'Pendaftaran Gagal', err.message || 'Terjadi kesalahan saat mendaftar');
+      btn.disabled = false;
+      btnText.textContent = 'Daftar Akun';
+    }
+  }
+</script>
+
+</body>
+</html>

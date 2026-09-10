@@ -1358,3 +1358,244 @@ label .required {
 .text-stock-danger { color: var(--danger); }
 .text-stock-warning { color: var(--warning); }
 .text-stock-normal { color: var(--gray-900); }
+
+/* --- Utility Classes for Login / Signup / Portal Pasien --- */
+.grid-3-cols { grid-template-columns: repeat(3, 1fr) !important; }
+.patient-portal-banner {
+  background: var(--teal-50);
+  border: 1px solid var(--teal-200);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.flex-center-gap-10 { display: flex; align-items: center; gap: 10px; }
+.patient-portal-icon-box {
+  width: 32px; height: 32px; background: white; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--teal-700); font-weight: bold;
+}
+.font-600-13 { font-weight: 600; font-size: 13px; color: var(--teal-900); }
+.font-11-teal { font-size: 11px; color: var(--teal-700); }
+.btn-sm-text { font-size: 12px; }
+.w-100 { width: 100%; }
+.demo-buttons-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.btn-demo-sm { padding: 3px 8px; font-size: 11px; }
+
+.bg-gradient-patient { background: linear-gradient(145deg, #00695C, #004D40) !important; }
+.brand-logo-patient { background: #E0F2F1 !important; color: #00796B !important; }
+.flex-between-mb8 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.link-staf-medis { color: var(--teal-600); font-weight: 500; }
+.demo-patient-btn-col { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.btn-demo-patient { justify-content: flex-start; padding: 4px 8px; font-size: 11px; }
+
+.bg-gradient-signup { background: linear-gradient(135deg, var(--teal-700), var(--teal-900)) !important; }
+.brand-logo-signup { background: white !important; color: var(--teal-700) !important; }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Two-column dashboard grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Action row at end of forms */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+/* Nav section spacing */
+.nav-section-gap { margin-top: 8px; }
+
+/* Search width presets */
+.search-w-260 { width: 260px; }
+.filter-w-160 { width: 160px; }
+.filter-w-150 { width: 150px; }
+
+/* Result count text */
+.result-count {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+/* Last refresh text */
+.refresh-text {
+  font-size: 11px;
+  color: var(--gray-400);
+}
+
+/* Stok stat grid - 4 col */
+.stat-cards-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Table KFA note */
+.kfa-note {
+  display: block;
+  color: var(--gray-400);
+  font-size: 10px;
+  margin-top: 2px;
+}
+.kfa-note.ok { color: var(--success); font-size: 11px; }
+
+/* Sukses modal content */
+.sukses-modal {
+  text-align: center;
+  padding: 32px 24px;
+}
+.sukses-modal .sukses-icon { font-size: 48px; margin-bottom: 16px; }
+.sukses-modal h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+.sukses-modal p {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-bottom: 8px;
+}
+.sukses-modal .sukses-id {
+  font-size: 12px;
+  color: var(--teal-700);
+  margin-bottom: 20px;
+}
+.sukses-modal .sukses-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Section label uppercase */
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+/* Nav danger item */
+/* Nav danger item */
+.nav-item-danger {
+  color: var(--danger) !important;
+  cursor: pointer;
+}
+
+/* Utility Helper Classes */
+.nav-logout { color: var(--danger) !important; cursor: pointer; }
+.nav-section-label-spaced { margin-top: 8px; }
+
+.modal-body-center { text-align: center; padding: 32px 24px; }
+.modal-icon-lg { font-size: 48px; margin-bottom: 16px; }
+.modal-heading { font-size: 18px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+.modal-text { font-size: 13px; color: var(--gray-500); margin-bottom: 8px; }
+.modal-subtext { font-size: 12px; color: var(--teal-700); margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: center; }
+
+.mb-xs { margin-bottom: 4px; }
+.mb-sm { margin-bottom: 8px; }
+.mb-md { margin-bottom: 14px; }
+.mb-lg { margin-bottom: 16px; }
+.mt-xs { margin-top: 2px; }
+.mt-sm { margin-top: 8px; }
+
+.flex-gap-xs { display: flex; gap: 4px; }
+.flex-gap-sm { display: flex; gap: 6px; }
+.flex-gap-md { display: flex; gap: 8px; }
+.flex-gap-lg { display: flex; gap: 12px; }
+.flex-end-gap { display: flex; justify-content: flex-end; gap: 12px; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-center { display: flex; align-items: center; }
+
+.text-muted-sm { font-size: 12px; color: var(--gray-500); }
+.text-muted-xs { font-size: 11px; color: var(--gray-400); }
+.text-bold-teal { font-weight: 600; color: var(--teal-700); }
+.text-danger { color: var(--danger); }
+.text-warning { color: var(--warning); }
+.text-success { color: var(--success); }
+.text-lg-bold { font-size: 18px; font-weight: 700; }
+.text-uppercase-label { font-size: 12px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+
+.hide { display: none !important; }
+.cursor-pointer { cursor: pointer; }
+.grid-col-full { grid-column: 1 / -1; }
+.grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+.input-addon-right { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.input-addon-no-left-border { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; border-left: none; }
+.dropdown-menu-search { display: none; position: absolute; z-index: 100; background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-md); box-shadow: var(--shadow-md); max-height: 220px; overflow-y: auto; width: 100%; margin-top: 2px; }
+.box-info-teal { display: none; background: var(--teal-50); border: 1px solid var(--teal-100); border-radius: var(--radius-md); padding: 14px 18px; }
+.box-substitusi { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; }
+.label-checkbox { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--gray-800); }
+.checkbox-teal { width: 16px; height: 16px; accent-color: var(--teal-500); }
+.spinner-sm { width: 16px; height: 16px; border-width: 2px; }
+.dropdown-item-hover { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--gray-100); transition: .1s; }
+.col-flex { display: flex; flex-direction: column; }
+.item-padding-border { padding: 12px 20px; border-bottom: 1px solid var(--gray-100); }
+.flex-grow-1 { flex: 1; }
+.mb-sub-gap { margin-bottom: 14px; }
+.text-stock-danger { color: var(--danger); }
+.text-stock-warning { color: var(--warning); }
+.text-stock-normal { color: var(--gray-900); }
+
+/* --- Utility Classes for Login / Signup / Portal Pasien --- */
+.grid-3-cols { grid-template-columns: repeat(3, 1fr) !important; }
+.patient-portal-banner {
+  background: var(--teal-50);
+  border: 1px solid var(--teal-200);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.flex-center-gap-10 { display: flex; align-items: center; gap: 10px; }
+.patient-portal-icon-box {
+  width: 32px; height: 32px; background: white; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--teal-700); font-weight: bold;
+}
+.font-600-13 { font-weight: 600; font-size: 13px; color: var(--teal-900); }
+.font-11-teal { font-size: 11px; color: var(--teal-700); }
+.btn-sm-text { font-size: 12px; }
+.w-100 { width: 100%; }
+.demo-buttons-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.btn-demo-sm { padding: 3px 8px; font-size: 11px; }
+
+.bg-gradient-patient { background: linear-gradient(145deg, #00695C, #004D40) !important; }
+.brand-logo-patient { background: #E0F2F1 !important; color: #00796B !important; }
+.flex-between-mb8 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.link-staf-medis { color: var(--teal-600); font-weight: 500; }
+.demo-patient-btn-col { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.btn-demo-patient { justify-content: flex-start; padding: 4px 8px; font-size: 11px; }
+
+.bg-gradient-signup { background: linear-gradient(135deg, var(--teal-700), var(--teal-900)) !important; }
+.brand-logo-signup { background: white !important; color: var(--teal-700) !important; }
+.login-right-scroll { padding: 40px; overflow-y: auto; }
+.signup-form-max { max-width: 500px; margin: 0 auto; }
+.mb-20 { margin-bottom: 20px !important; }
+.flex-gap-10-mt8 { display: flex; gap: 10px; margin-top: 8px; }
+.dynamic-fields-title { font-size: 12px; font-weight: 600; color: var(--teal-700); margin-bottom: 12px; text-transform: uppercase; }
+.mt-10 { margin-top: 10px !important; }
+.mt-30 { margin-top: 30px !important; }
+
+.footer-shortcut-text { margin-bottom: 16px; font-size: 14px; color: var(--gray-500); text-align: center; }
+.footer-shortcut-link { color: var(--teal-600); font-weight: 600; }
