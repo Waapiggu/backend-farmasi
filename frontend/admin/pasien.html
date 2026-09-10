@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manajemen Pasien — Admin Panel SisFarmasi</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon" style="background: linear-gradient(135deg, #1E293B, #0F172A);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="logo-text"><span>Admin Panel</span><span style="color: var(--teal-600);">SisFarmasi</span></div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar" style="background: var(--gray-100); color: var(--gray-800);">ADM</div>
+      <div class="user-info">
+        <span id="sidebar-user-name">Administrator</span>
+        <span id="sidebar-user-role" style="color: var(--teal-600); font-weight: 600;">Admin Sistem</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Supervisi & Monitoring</div>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span> Dashboard Utama
+      </a>
+      <a href="monitoring-resep.html" class="nav-item" id="nav-monitoring">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Monitoring Resep
+      </a>
+      <a href="satusehat.html" class="nav-item" id="nav-satusehat">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></span> SATUSEHAT Sandbox
+      </a>
+
+      <div class="nav-section-label nav-section-label-spaced">Master Data</div>
+      <a href="pasien.html" class="nav-item active" id="nav-pasien">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Manajemen Pasien
+      </a>
+      <a href="pengguna.html" class="nav-item" id="nav-pengguna">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span> Manajemen Pengguna
+      </a>
+      <a href="../apoteker/stok.html" class="nav-item" id="nav-stok">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span> Katalog Obat & KFA
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="nav-item nav-logout" onclick="Auth.logout()">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Manajemen Data Pasien</h1>
+        <div class="breadcrumb">Admin / <a href="dashboard.html">Dashboard</a> / Pasien</div>
+      </div>
+      <div class="header-right">
+        <div class="header-time" id="live-clock"></div>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <div class="alert alert-info mb-lg">
+        <span class="alert-icon">🏥</span>
+        <div>Data pasien ini terintegrasi dengan Nomor Induk Kependudukan (NIK) dan ID SATUSEHAT (IHS Number). Seluruh resep dokter dan riwayat pengambilan obat dikaitkan langsung dengan identitas pasien.</div>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <div class="search-group search-w-260">
+            <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="search-input" class="form-control" placeholder="Cari nama, NIK, atau IHS..." oninput="applyFilter()"/>
+          </div>
+          <div class="spacer"></div>
+          <span id="result-count" class="text-muted-sm"></span>
+          <button class="btn btn-secondary btn-sm" onclick="loadPatients()">Refresh</button>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>IHS Number</th>
+                <th>Nama Pasien</th>
+                <th>NIK</th>
+                <th>Jenis Kelamin</th>
+                <th>Tanggal Lahir</th>
+                <th>Alamat</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tb-patients">
+              <tr><td colspan="7"><div class="empty-state"><div class="spinner"></div><p>Memuat data pasien...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- end page-content -->
+  </div><!-- end main-content -->
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Modal Detail Pasien & Riwayat -->
+<div class="modal-overlay" id="modal-patient-detail">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title-patient">Profil & Rekam Pasien</span>
+      <span class="modal-close" onclick="Utils.closeModal('modal-patient-detail')">✕</span>
+    </div>
+    <div class="modal-body" id="modal-body-patient"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('modal-patient-detail')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  Auth.requireAuth('admin');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  let allPatients = [];
+  let filtered = [];
+
+  async function loadPatients() {
+    try {
+      allPatients = await API.getPatients();
+      applyFilter();
+    } catch(e) {
+      console.error(e);
+      Utils.toast('error', 'Gagal memuat pasien', e.message);
+    }
+  }
+
+  function applyFilter() {
+    const q = document.getElementById('search-input').value.trim().toLowerCase();
+    filtered = allPatients.filter(p => 
+      !q || 
+      p.name.toLowerCase().includes(q) || 
+      p.nik.includes(q) || 
+      p.ihs_number.toLowerCase().includes(q) || 
+      p.address.toLowerCase().includes(q)
+    );
+    renderTable();
+  }
+
+  function renderTable() {
+    const tb = document.getElementById('tb-patients');
+    document.getElementById('result-count').textContent = `${filtered.length} Pasien Terdaftar`;
+
+    if (!filtered.length) {
+      tb.innerHTML = Utils.emptyRow(7, 'Tidak ada data pasien yang cocok');
+      return;
+    }
+
+    tb.innerHTML = filtered.map(p => `
+      <tr>
+        <td><span class="td-mono">${p.ihs_number}</span></td>
+        <td><div class="td-main font-bold">${p.name}</div></td>
+        <td><span class="td-mono">${p.nik}</span></td>
+        <td>${p.gender === 'L' ? 'Laki-laki' : 'Perempuan'}</td>
+        <td>${Utils.formatDate(p.dob)}</td>
+        <td><div class="td-sub">${p.address}</div></td>
+        <td>
+          <button class="btn btn-outline-teal btn-sm" onclick="showPatientDetail('${p.nik}')">Detail & Resep</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  async function showPatientDetail(nik) {
+    const patient = allPatients.find(p => p.nik === nik);
+    if (!patient) return;
+
+    // Ambil resep terkait
+    const allPrescriptions = await API.getPrescriptions();
+    const patientRx = allPrescriptions.filter(p => p.patient_nik === nik || p.patient_ihs_number === patient.ihs_number);
+
+    document.getElementById('modal-body-patient').innerHTML = `
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nama Lengkap</label><div class="info-value font-bold">${patient.name}</div></div>
+        <div class="info-item"><label>Nomor SATUSEHAT IHS</label><div class="info-value td-mono font-bold text-teal-800">${patient.ihs_number}</div></div>
+        <div class="info-item"><label>Nomor Induk Kependudukan (NIK)</label><div class="info-value td-mono">${patient.nik}</div></div>
+        <div class="info-item"><label>Tanggal Lahir</label><div class="info-value">${Utils.formatDate(patient.dob)} (${patient.gender === 'L' ? 'Laki-laki' : 'Perempuan'})</div></div>
+        <div class="info-item grid-col-full"><label>Alamat KTP</label><div class="info-value">${patient.address}</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="text-uppercase-label">Riwayat Resep Terdaftar (${patientRx.length} Resep)</p>
+      ${patientRx.length === 0 ? '<div class="empty-state" style="padding: 14px;"><p>Belum ada riwayat resep untuk pasien ini.</p></div>' : `
+        <div class="table-wrapper" style="max-height: 250px; overflow-y: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>No. Resep</th>
+                <th>Obat</th>
+                <th>Dokter</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${patientRx.map(r => `
+                <tr>
+                  <td><span class="td-mono">${r.prescription_number}</span></td>
+                  <td><strong>${r.medication_name}</strong> (${r.quantity} ${r.quantity_unit})</td>
+                  <td>${r.requester_name}</td>
+                  <td>${r.authored_on_display}</td>
+                  <td>${Utils.statusBadge(r.status)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `}
+    `;
+
+    Utils.openModal('modal-patient-detail');
+  }
+
+  loadPatients();
+</script>
+</body>
+</html>

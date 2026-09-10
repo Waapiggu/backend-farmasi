@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SATUSEHAT Interoperability Monitor — Admin Panel</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    .fhir-tab-buttons {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--gray-200);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+    }
+    .fhir-tab-btn {
+      background: var(--gray-100);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--gray-700);
+      transition: all 0.2s;
+    }
+    .fhir-tab-btn.active {
+      background: var(--teal-500);
+      color: white;
+      border-color: var(--teal-600);
+      box-shadow: var(--shadow-teal);
+    }
+    .json-viewer {
+      background: #0F172A;
+      color: #A7F3D0;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #1E293B;
+    }
+    .config-card {
+      background: var(--white);
+      border: 1px solid var(--teal-200);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon" style="background: linear-gradient(135deg, #1E293B, #0F172A);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="logo-text"><span>Admin Panel</span><span style="color: var(--teal-600);">SisFarmasi</span></div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar" style="background: var(--gray-100); color: var(--gray-800);">ADM</div>
+      <div class="user-info">
+        <span id="sidebar-user-name">Administrator</span>
+        <span id="sidebar-user-role" style="color: var(--teal-600); font-weight: 600;">Admin Sistem</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Supervisi & Monitoring</div>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span> Dashboard Utama
+      </a>
+      <a href="monitoring-resep.html" class="nav-item" id="nav-monitoring">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Monitoring Resep
+      </a>
+      <a href="satusehat.html" class="nav-item active" id="nav-satusehat">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></span> SATUSEHAT Sandbox
+      </a>
+
+      <div class="nav-section-label nav-section-label-spaced">Master Data</div>
+      <a href="pasien.html" class="nav-item" id="nav-pasien">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Manajemen Pasien
+      </a>
+      <a href="pengguna.html" class="nav-item" id="nav-pengguna">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span> Manajemen Pengguna
+      </a>
+      <a href="../apoteker/stok.html" class="nav-item" id="nav-stok">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span> Katalog Obat & KFA
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="nav-item nav-logout" onclick="Auth.logout()">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>SATUSEHAT Sandbox Integration Monitor</h1>
+        <div class="breadcrumb">Admin / <a href="dashboard.html">Dashboard</a> / SATUSEHAT</div>
+      </div>
+      <div class="header-right">
+        <div class="header-time" id="live-clock"></div>
+        <button class="btn btn-primary btn-sm" onclick="triggerSimulatedSync()">
+          ⚡ Simulasikan Sinkronisasi Batch
+        </button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- Sandbox Environment Info -->
+      <div class="config-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div>
+            <div style="font-weight: 700; font-size: 15px; color: var(--teal-900);">Konektivitas Sandbox SATUSEHAT Platform</div>
+            <div style="font-size: 12px; color: var(--gray-500);">Modul Pelayanan Kefarmasian (FHIR R4 & Kamus Farmasi KFA)</div>
+          </div>
+          <span class="badge badge-active">Sandbox Connected (HTTP 200)</span>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item"><label>Environment</label><div class="info-value">DTO Kemenkes RI Staging / Sandbox</div></div>
+          <div class="info-item"><label>Base URL FHIR R4</label><div class="info-value td-mono" style="font-size: 11px;">https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1</div></div>
+          <div class="info-item"><label>Faskes Organization ID</label><div class="info-value td-mono">10000004</div></div>
+          <div class="info-item"><label>Kamus Farmasi (KFA)</label><div class="info-value td-mono" style="font-size: 11px;">http://sys-ids.kemkes.go.id/kfa</div></div>
+        </div>
+      </div>
+
+      <!-- FHIR Resource Schema Inspector -->
+      <div class="card mb-lg">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Inspeksi Struktur Payload FHIR R4 (SATUSEHAT)</div>
+            <div class="card-subtitle">Format JSON resmi yang dikirimkan ke server Kemenkes RI</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="fhir-tab-buttons">
+            <button class="fhir-tab-btn active" onclick="switchFhirTab('MedicationRequest', this)">MedicationRequest (Resep)</button>
+            <button class="fhir-tab-btn" onclick="switchFhirTab('MedicationDispense', this)">MedicationDispense (Serah Obat)</button>
+            <button class="fhir-tab-btn" onclick="switchFhirTab('Patient', this)">Patient (IHS)</button>
+            <button class="fhir-tab-btn" onclick="switchFhirTab('KFA', this)">KFA Master Codes</button>
+          </div>
+
+          <pre class="json-viewer" id="fhir-json-display"></pre>
+        </div>
+      </div>
+
+      <!-- Sync Logs Audit -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Log Sinkronisasi SATUSEHAT Sandbox</div>
+            <div class="card-subtitle">Audit pengiriman data otomatis dari modul Dokter dan Apoteker</div>
+          </div>
+          <span id="log-count" class="text-muted-sm"></span>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Log ID</th>
+                <th>Resource Type</th>
+                <th>Resource ID</th>
+                <th>Status Respon</th>
+                <th>Waktu Transaksi</th>
+                <th>Keterangan Sinkronisasi</th>
+              </tr>
+            </thead>
+            <tbody id="tb-sync-logs">
+              <tr><td colspan="6"><div class="empty-state"><div class="spinner"></div><p>Memuat log...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- end page-content -->
+  </div><!-- end main-content -->
+</div>
+
+<div id="toast-container"></div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/satusehat.js"></script>
+<script>
+  Auth.requireAuth('admin');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  let currentTab = 'MedicationRequest';
+
+  function renderFhirTab() {
+    const display = document.getElementById('fhir-json-display');
+    
+    if (currentTab === 'MedicationRequest') {
+      const sampleRx = MOCK_DATA.prescriptions[0];
+      const payload = SATUSEHATService.buildMedicationRequestPayload(sampleRx);
+      display.textContent = JSON.stringify(payload, null, 2);
+    } else if (currentTab === 'MedicationDispense') {
+      const sampleDisp = MOCK_DATA.dispenses[0];
+      const payload = SATUSEHATService.buildMedicationDispensePayload(sampleDisp);
+      display.textContent = JSON.stringify(payload, null, 2);
+    } else if (currentTab === 'Patient') {
+      const samplePatient = MOCK_DATA.patients[0];
+      display.textContent = JSON.stringify({
+        resourceType: 'Patient',
+        id: samplePatient.ihs_number,
+        identifier: [
+          { system: 'https://fhir.kemkes.go.id/id/nik', value: samplePatient.nik },
+          { system: 'https://fhir.kemkes.go.id/id/ihs-number', value: samplePatient.ihs_number }
+        ],
+        name: [{ use: 'official', text: samplePatient.name }],
+        gender: samplePatient.gender === 'L' ? 'male' : 'female',
+        birthDate: samplePatient.dob,
+        address: [{ text: samplePatient.address }]
+      }, null, 2);
+    } else if (currentTab === 'KFA') {
+      display.textContent = JSON.stringify({
+        system: 'http://sys-ids.kemkes.go.id/kfa',
+        description: 'Standar Kamus Farmasi dan Alat Kesehatan Kemenkes RI',
+        categories: {
+          'POV (Prescription-Only Product)': 'Awalan kode 92xxxxxx - Digunakan untuk peresepan oleh Dokter (MedicationRequest)',
+          'POA (Product Orderable / Dispense)': 'Awalan kode 93xxxxxx - Wajib digunakan untuk penyerahan obat oleh Apoteker (MedicationDispense)',
+          'BZA (Bahan Zat Aktif / Ingredient)': 'Awalan kode 91xxxxxx - Zat aktif obat'
+        },
+        sample_codes_in_system: MOCK_DATA.medications.map(m => ({
+          id: m.id,
+          name: m.name,
+          kfa_resep_92: m.kfa_code_92,
+          kfa_dispense_93: m.kfa_code_93
+        }))
+      }, null, 2);
+    }
+  }
+
+  function switchFhirTab(tab, btn) {
+    currentTab = tab;
+    document.querySelectorAll('.fhir-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderFhirTab();
+  }
+
+  function renderSyncLogs() {
+    const logs = SATUSEHATService.getSyncLogs();
+    const tb = document.getElementById('tb-sync-logs');
+    document.getElementById('log-count').textContent = `${logs.length} Log Transaksi`;
+
+    tb.innerHTML = logs.map(l => `
+      <tr>
+        <td><span class="td-mono">${l.id}</span></td>
+        <td><span class="tag tag-teal">${l.resource_type}</span></td>
+        <td><span class="td-mono">${l.resource_id}</span></td>
+        <td><span class="badge badge-ok">${l.status_code} ${l.status_text}</span></td>
+        <td><div class="td-sub">${l.timestamp_display}</div></td>
+        <td><div class="td-main">${l.details}</div></td>
+      </tr>
+    `).join('');
+  }
+
+  async function triggerSimulatedSync() {
+    Utils.toast('info', 'Sinkronisasi SATUSEHAT', 'Mengirimkan batch verifikasi FHIR ke Sandbox...');
+    
+    setTimeout(() => {
+      // Buat entri simulasi
+      const newLogId = 'SS-LOG-' + String(SATUSEHATService.getSyncLogs().length + 1).padStart(3, '0');
+      SATUSEHATService.getSyncLogs().unshift({
+        id: newLogId,
+        resource_type: 'MedicationRequest',
+        resource_id: 'MR-BATCH',
+        status_code: 200,
+        status_text: 'Synchronized',
+        timestamp: new Date().toISOString(),
+        timestamp_display: Utils.formatDateTime(new Date().toISOString()),
+        details: 'Batch verifikasi seluruh resep aktif berhasil disinkronkan ke SATUSEHAT Sandbox'
+      });
+
+      renderSyncLogs();
+      Utils.toast('success', 'Sinkronisasi Berhasil', 'Data FHIR terverifikasi valid tanpa error (HTTP 200 OK)');
+    }, 800);
+  }
+
+  renderFhirTab();
+  renderSyncLogs();
+</script>
+</body>
+</html>

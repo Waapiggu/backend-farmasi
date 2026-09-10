@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Riwayat Obat — Portal Pasien SisFarmasi SatuSehat</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon" style="background: linear-gradient(135deg, var(--teal-600), var(--teal-800));">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="logo-text"><span>Portal Pasien</span><span>SisFarmasi</span></div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar" style="background: var(--teal-100); color: var(--teal-800);">?</div>
+      <div class="user-info">
+        <span id="sidebar-user-name">Loading...</span>
+        <span id="sidebar-user-role" class="text-teal-600 font-500">Pasien</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Pasien</div>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span>
+        Beranda
+      </a>
+      <a href="resep.html" class="nav-item" id="nav-resep">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+        Resep Saya
+      </a>
+      <a href="riwayat-obat.html" class="nav-item active" id="nav-riwayat">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg></span>
+        Riwayat Obat
+      </a>
+
+      <div class="nav-section-label nav-section-label-spaced">Akses Staf</div>
+      <a href="../index.html" class="nav-item">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+        Portal Staf Rumah Sakit
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="nav-item nav-logout" onclick="Auth.logout()">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+        Keluar
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Riwayat Pengambilan Obat</h1>
+        <div class="breadcrumb">Pasien / <a href="dashboard.html">Beranda</a> / Riwayat Obat</div>
+      </div>
+      <div class="header-right">
+        <div class="header-time" id="live-clock"></div>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <div class="alert alert-info mb-lg">
+        <span class="alert-icon">📋</span>
+        <div>Halaman ini mencatat riwayat seluruh obat yang telah diserahkan kepada Anda oleh apoteker fasilitas kesehatan. Gunakan riwayat ini untuk referensi konsultasi dokter berikutnya.</div>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <div class="search-group search-w-260">
+            <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="search-input" class="form-control" placeholder="Cari nama obat / nomor resep..." oninput="applyFilter()"/>
+          </div>
+          <div class="spacer"></div>
+          <span id="result-count" class="text-muted-sm"></span>
+          <button class="btn btn-secondary btn-sm" onclick="loadHistory()">Perbarui</button>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu Pengambilan</th>
+                <th>Nama Obat</th>
+                <th>Jumlah Diterima</th>
+                <th>Aturan Pakai</th>
+                <th>No. Resep</th>
+                <th>Apoteker Penyerah</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tb-history">
+              <tr><td colspan="7"><div class="empty-state"><div class="spinner"></div><p>Memuat riwayat obat...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- end page-content -->
+  </div><!-- end main-content -->
+</div>
+
+<div id="toast-container"></div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  Auth.requireAuth('pasien');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  const currentUser = Auth.getUser();
+  const patientProfile = Auth.getPatientProfile();
+  let allDispenses = [];
+  let filteredDispenses = [];
+
+  async function loadHistory() {
+    try {
+      const myNik = currentUser.nik || patientProfile?.nik;
+      const myIhs = currentUser.ihs_number || patientProfile?.ihs_number;
+
+      const dispenses = await API.getDispenses();
+      allDispenses = dispenses.filter(d => 
+        d.patient_ihs_number === myIhs || 
+        d.patient_name?.toLowerCase() === currentUser.name?.toLowerCase()
+      );
+
+      applyFilter();
+    } catch(e) {
+      console.error(e);
+      Utils.toast('error', 'Gagal memuat riwayat', e.message);
+    }
+  }
+
+  function applyFilter() {
+    const q = document.getElementById('search-input').value.trim().toLowerCase();
+    filteredDispenses = allDispenses.filter(d => 
+      !q || d.medication_name.toLowerCase().includes(q) || d.prescription_number.toLowerCase().includes(q) || d.dispensed_by_name?.toLowerCase().includes(q)
+    );
+    renderTable();
+  }
+
+  function renderTable() {
+    const tb = document.getElementById('tb-history');
+    document.getElementById('result-count').textContent = `${filteredDispenses.length} Riwayat Obat`;
+
+    if (filteredDispenses.length === 0) {
+      tb.innerHTML = Utils.emptyRow(7, 'Belum ada riwayat obat yang diserahkan');
+      return;
+    }
+
+    tb.innerHTML = filteredDispenses.map(d => `
+      <tr>
+        <td>
+          <div class="td-main">${d.dispensed_at_display}</div>
+        </td>
+        <td>
+          <div class="td-main font-bold text-teal-800">${d.medication_name}</div>
+          <div class="td-sub">${d.medication_form || 'Sediaan Obat'}</div>
+        </td>
+        <td>
+          <div class="td-main">${d.quantity} ${d.quantity_unit}</div>
+        </td>
+        <td>
+          <div class="td-main">${d.dosage_value || 1} ${d.dosage_unit || 'tablet'} &bull; ${d.dosage_timing_code || 'Sesuai Anjuran'}</div>
+          <div class="td-sub">${d.dosage_additional_instruction || '-'}</div>
+        </td>
+        <td>
+          <span class="td-mono">${d.prescription_number}</span>
+        </td>
+        <td>
+          <div class="td-main">${d.dispensed_by_name || 'Apoteker'}</div>
+        </td>
+        <td>
+          <span class="badge badge-completed">Sudah Diterima</span>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  loadHistory();
+</script>
+</body>
+</html>

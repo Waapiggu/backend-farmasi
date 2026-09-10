@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monitoring Resep — Admin Panel SisFarmasi</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon" style="background: linear-gradient(135deg, #1E293B, #0F172A);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="logo-text"><span>Admin Panel</span><span style="color: var(--teal-600);">SisFarmasi</span></div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar" style="background: var(--gray-100); color: var(--gray-800);">ADM</div>
+      <div class="user-info">
+        <span id="sidebar-user-name">Administrator</span>
+        <span id="sidebar-user-role" style="color: var(--teal-600); font-weight: 600;">Admin Sistem</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Supervisi & Monitoring</div>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span> Dashboard Utama
+      </a>
+      <a href="monitoring-resep.html" class="nav-item active" id="nav-monitoring">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Monitoring Resep
+      </a>
+      <a href="satusehat.html" class="nav-item" id="nav-satusehat">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></span> SATUSEHAT Sandbox
+      </a>
+
+      <div class="nav-section-label nav-section-label-spaced">Master Data</div>
+      <a href="pasien.html" class="nav-item" id="nav-pasien">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Manajemen Pasien
+      </a>
+      <a href="pengguna.html" class="nav-item" id="nav-pengguna">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span> Manajemen Pengguna
+      </a>
+      <a href="../apoteker/stok.html" class="nav-item" id="nav-stok">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span> Katalog Obat & KFA
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="nav-item nav-logout" onclick="Auth.logout()">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Monitoring Resep Terpadu</h1>
+        <div class="breadcrumb">Admin / <a href="dashboard.html">Dashboard</a> / Monitoring Resep</div>
+      </div>
+      <div class="header-right">
+        <div class="header-time" id="live-clock"></div>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <div class="alert alert-info mb-lg">
+        <span class="alert-icon">🛡️</span>
+        <div><strong>Peran Administrator (Read-Only Audit):</strong> Anda memiliki hak pengawasan penuh terhadap seluruh siklus resep rumah sakit dari Dokter hingga Apoteker. Sesuai prinsip regulasi medis, keputusan klinis dokter dan penyerahan obat apoteker tidak dapat diubah sembarangan oleh admin.</div>
+      </div>
+
+      <div class="card">
+        <!-- Toolbar & Filters -->
+        <div class="toolbar">
+          <div class="search-group search-w-260">
+            <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="search-input" class="form-control" placeholder="Cari no. resep, pasien, dokter..." oninput="applyFilter()"/>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Status:</span>
+            <select id="filter-status" class="form-control filter-w-160" onchange="applyFilter()">
+              <option value="">Semua Status</option>
+              <option value="active">Active (Menunggu Dispense)</option>
+              <option value="completed">Completed (Sudah Didispense)</option>
+              <option value="cancelled">Cancelled (Dibatalkan)</option>
+            </select>
+          </div>
+          <div class="spacer"></div>
+          <span id="result-count" class="text-muted-sm"></span>
+          <button class="btn btn-secondary btn-sm" onclick="loadMonitoringData()">Refresh</button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>No. Resep</th>
+                <th>Pasien</th>
+                <th>Dokter Peresep</th>
+                <th>Apoteker Dispenser</th>
+                <th>Obat & Kode KFA</th>
+                <th>Jumlah</th>
+                <th>Tgl Resep</th>
+                <th>Status Resep</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tb-monitoring">
+              <tr><td colspan="9"><div class="empty-state"><div class="spinner"></div><p>Memuat data peresepan...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- end page-content -->
+  </div><!-- end main-content -->
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Modal Audit Trail Resep -->
+<div class="modal-overlay" id="modal-audit">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title">Audit Trail Siklus Resep & Interoperabilitas</span>
+      <span class="modal-close" onclick="Utils.closeModal('modal-audit')">✕</span>
+    </div>
+    <div class="modal-body" id="modal-audit-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('modal-audit')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/satusehat.js"></script>
+<script>
+  Auth.requireAuth('admin');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  let allPrescriptions = [];
+  let allDispenses = [];
+  let filtered = [];
+
+  async function loadMonitoringData() {
+    try {
+      const [prescriptions, dispenses] = await Promise.all([
+        API.getPrescriptions(),
+        API.getDispenses()
+      ]);
+      allPrescriptions = prescriptions;
+      allDispenses = dispenses;
+
+      // Cek query params dari URL (misal ?status=active)
+      const params = new URLSearchParams(window.location.search);
+      const initialStatus = params.get('status');
+      if (initialStatus) {
+        document.getElementById('filter-status').value = initialStatus;
+      }
+
+      applyFilter();
+    } catch(e) {
+      console.error(e);
+      Utils.toast('error', 'Gagal memuat', e.message);
+    }
+  }
+
+  function applyFilter() {
+    const q = document.getElementById('search-input').value.trim().toLowerCase();
+    const st = document.getElementById('filter-status').value;
+
+    filtered = allPrescriptions.filter(p => {
+      const matchKeyword = !q || 
+        p.prescription_number.toLowerCase().includes(q) || 
+        p.patient_name.toLowerCase().includes(q) || 
+        p.requester_name.toLowerCase().includes(q) || 
+        p.medication_name.toLowerCase().includes(q);
+      const matchStatus = !st || p.status === st;
+      return matchKeyword && matchStatus;
+    });
+
+    renderTable();
+  }
+
+  function renderTable() {
+    const tb = document.getElementById('tb-monitoring');
+    document.getElementById('result-count').textContent = `${filtered.length} Transaksi Resep`;
+
+    if (!filtered.length) {
+      tb.innerHTML = Utils.emptyRow(9, 'Tidak ada transaksi resep yang sesuai.');
+      return;
+    }
+
+    tb.innerHTML = filtered.map(p => {
+      // Cari data dispense yang bersesuaian jika resep sudah completed
+      const dispense = allDispenses.find(d => d.prescription_id === p.id || d.prescription_number === p.prescription_number);
+      const pharmacistName = dispense ? dispense.dispensed_by_name : (p.status === 'completed' ? 'apt. Siti Nurhaliza' : '-');
+
+      return `
+        <tr>
+          <td>
+            <div class="td-main font-bold">${p.prescription_number}</div>
+            <div class="td-sub">${p.prescription_item_number || p.id}</div>
+          </td>
+          <td>
+            <div class="td-main">${p.patient_name}</div>
+            <div class="td-sub">NIK: ${p.patient_nik || '-'}</div>
+          </td>
+          <td>
+            <div class="td-main">${p.requester_name || '-'}</div>
+            <div class="td-sub">NPA: ${p.requester_npa || '1234567'}</div>
+          </td>
+          <td>
+            <div class="td-main">${pharmacistName}</div>
+            <div class="td-sub">${dispense ? dispense.dispensed_at_display : (p.status==='active'?'Dalam antrian':'-')}</div>
+          </td>
+          <td>
+            <div class="td-main">${p.medication_name}</div>
+            <div class="td-sub">KFA: ${Utils.kfaTag(p.medication_kfa)}</div>
+          </td>
+          <td>
+            <div class="td-main">${p.quantity} ${p.quantity_unit}</div>
+          </td>
+          <td>
+            <div class="td-main">${p.authored_on_display}</div>
+          </td>
+          <td>
+            ${Utils.statusBadge(p.status)}
+          </td>
+          <td>
+            <button class="btn btn-outline-teal btn-sm" onclick="showAuditDetail('${p.id}')">Audit Detail</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function showAuditDetail(id) {
+    const p = allPrescriptions.find(x => x.id === id);
+    if (!p) return;
+
+    const dispense = allDispenses.find(d => d.prescription_id === p.id || d.prescription_number === p.prescription_number);
+    const fhirPayload = SATUSEHATService.buildMedicationRequestPayload(p);
+
+    document.getElementById('modal-audit-body').innerHTML = `
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nomor Resep</label><div class="info-value font-bold">${p.prescription_number}</div></div>
+        <div class="info-item"><label>Status Siklus</label><div class="info-value">${Utils.statusBadge(p.status)}</div></div>
+        <div class="info-item"><label>Dokter Peresep</label><div class="info-value">${p.requester_name}</div></div>
+        <div class="info-item"><label>Apoteker Dispenser</label><div class="info-value">${dispense ? dispense.dispensed_by_name : (p.status==='completed' ? 'Apoteker Penanggung Jawab' : 'Belum diproses')}</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="text-uppercase-label">Data Pasien & Identitas SATUSEHAT</p>
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nama Pasien</label><div class="info-value">${p.patient_name}</div></div>
+        <div class="info-item"><label>NIK</label><div class="info-value">${p.patient_nik || '-'}</div></div>
+        <div class="info-item"><label>IHS Number</label><div class="info-value td-mono">${p.patient_ihs_number || '-'}</div></div>
+        <div class="info-item"><label>Pembiayaan</label><div class="info-value">${Utils.paymentBadge(p.payment_type)}</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="text-uppercase-label">Detail Obat & Kode KFA</p>
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nama Obat</label><div class="info-value text-teal-800 font-bold">${p.medication_name}</div></div>
+        <div class="info-item"><label>Kode KFA Peresepan (POV 92)</label><div class="info-value">${Utils.kfaTag(p.medication_kfa)}</div></div>
+        <div class="info-item"><label>Kode KFA Dispense (POA 93)</label><div class="info-value">${dispense ? Utils.kfaTag(dispense.medication_kfa) : '<span class="text-muted-xs">Ditetapkan saat dispense</span>'}</div></div>
+        <div class="info-item"><label>Dosis & Frekuensi</label><div class="info-value">${p.dosage_value} ${p.dosage_unit} &bull; <span class="tag tag-teal">${p.dosage_timing_code}</span></div></div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="text-uppercase-label">Struktur Resource FHIR R4 MedicationRequest (SATUSEHAT Sandbox)</p>
+      <pre style="background: var(--gray-900); color: #A7F3D0; padding: 12px; border-radius: var(--radius-md); font-size: 11px; max-height: 200px; overflow-y: auto;">${JSON.stringify(fhirPayload, null, 2)}</pre>
+    `;
+
+    Utils.openModal('modal-audit');
+  }
+
+  loadMonitoringData();
+</script>
+</body>
+</html>

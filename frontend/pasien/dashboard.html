@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Pasien — SisFarmasi SatuSehat</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    /* Patient-specific styling enhancements */
+    .patient-hero {
+      background: linear-gradient(135deg, #00796B, #004D40);
+      border-radius: var(--radius-lg);
+      color: white;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 18px rgba(0, 121, 107, 0.25);
+    }
+    .patient-hero h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .patient-hero p { opacity: 0.9; font-size: 13px; }
+    .ihs-badge-large {
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .pill-step.active { background: #FEF3C7; color: #92400E; }
+    .pill-step.ready { background: #DBEAFE; color: #1E40AF; }
+    .pill-step.done { background: #D1FAE5; color: #065F46; }
+    .med-schedule-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s;
+    }
+    .med-schedule-card:hover {
+      border-color: var(--teal-300);
+      box-shadow: var(--shadow-sm);
+    }
+    .med-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--teal-50);
+      color: var(--teal-700);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Patient Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon" style="background: linear-gradient(135deg, var(--teal-600), var(--teal-800));">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="logo-text">
+        <span>Portal Pasien</span>
+        <span>SisFarmasi</span>
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar" style="background: var(--teal-100); color: var(--teal-800);">?</div>
+      <div class="user-info">
+        <span id="sidebar-user-name">Loading...</span>
+        <span id="sidebar-user-role" class="text-teal-600 font-500">Pasien</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Pasien</div>
+      <a href="dashboard.html" class="nav-item active" id="nav-dashboard">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span>
+        Beranda
+      </a>
+      <a href="resep.html" class="nav-item" id="nav-resep">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+        Resep Saya <span class="nav-badge" id="badge-active-rx">0</span>
+      </a>
+      <a href="riwayat-obat.html" class="nav-item" id="nav-riwayat">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg></span>
+        Riwayat Obat
+      </a>
+
+      <div class="nav-section-label nav-section-label-spaced">Akses Staf</div>
+      <a href="../index.html" class="nav-item">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+        Portal Staf Rumah Sakit
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="nav-item nav-logout" onclick="Auth.logout()">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+        Keluar
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Portal Pasien</h1>
+        <div class="breadcrumb">Pasien / Beranda</div>
+      </div>
+      <div class="header-right">
+        <div class="header-time" id="live-clock"></div>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- Patient Hero Greeting -->
+      <div class="patient-hero">
+        <div>
+          <p>Selamat Datang Kembali,</p>
+          <h2 id="patient-greeting-name">-</h2>
+          <p id="patient-greeting-info">NIK: - &bull; Layanan Terintegrasi SatuSehat</p>
+        </div>
+        <div>
+          <div class="ihs-badge-large">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+            <span id="patient-ihs-display">IHS: -</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat Cards for Patient -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-card-info">
+            <div class="stat-label">Resep Aktif</div>
+            <div class="stat-value" id="pstat-active">0</div>
+            <div class="stat-sub">Sedang berjalan / disiapkan</div>
+          </div>
+          <div class="stat-icon yellow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-info">
+            <div class="stat-label">Obat Selesai Ditebus</div>
+            <div class="stat-value" id="pstat-completed">0</div>
+            <div class="stat-sub">Telah diserahkan apotek</div>
+          </div>
+          <div class="stat-icon green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-info">
+            <div class="stat-label">Jenis Pembiayaan</div>
+            <div class="stat-value" style="font-size: 20px; margin-top: 4px;" id="pstat-payment">BPJS-K</div>
+            <div class="stat-sub">Jaminan Kesehatan Pasien</div>
+          </div>
+          <div class="stat-icon teal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-info">
+            <div class="stat-label">Koneksi SATUSEHAT</div>
+            <div class="stat-value" style="font-size: 18px; color: var(--teal-600); margin-top: 4px;">Terhubung</div>
+            <div class="stat-sub">Sinkronisasi ID IHS Valid</div>
+          </div>
+          <div class="stat-icon teal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout: 2 Columns -->
+      <div class="grid-2-col">
+
+        <!-- Left: Resep yang Sedang Diproses -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Resep Terkini Anda</div>
+              <div class="card-subtitle">Status proses obat di bagian Farmasi / Apotek</div>
+            </div>
+            <a href="resep.html" class="btn btn-secondary btn-sm">Lihat Semua Resep &rarr;</a>
+          </div>
+          <div class="card-body">
+            <div id="active-prescriptions-list">
+              <div class="empty-state"><div class="spinner"></div><p>Memuat resep Anda...</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Jadwal & Aturan Minum Obat -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Panduan Aturan Minum Obat</div>
+              <div class="card-subtitle">Petunjuk konsumsi obat yang sedang aktif</div>
+            </div>
+            <span class="badge badge-active">Resep Aktif</span>
+          </div>
+          <div class="card-body">
+            <div id="medication-instructions-list">
+              <div class="empty-state"><div class="spinner"></div><p>Memuat aturan pakai...</p></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end grid-2-col -->
+
+      <!-- Patient Demographic Card -->
+      <div class="card mt-lg">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Informasi Pasien & SATUSEHAT</div>
+            <div class="card-subtitle">Data resmi yang terdaftar pada sistem rekam medis fasilitas kesehatan</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item"><label>Nama Lengkap</label><div class="info-value" id="pi-full-name">-</div></div>
+            <div class="info-item"><label>Nomor Induk Kependudukan (NIK)</label><div class="info-value" id="pi-nik">-</div></div>
+            <div class="info-item"><label>Nomor SATUSEHAT IHS</label><div class="info-value" id="pi-ihs"><span class="td-mono">-</span></div></div>
+            <div class="info-item"><label>Tanggal Lahir</label><div class="info-value" id="pi-dob">-</div></div>
+            <div class="info-item"><label>Jenis Kelamin</label><div class="info-value" id="pi-gender">-</div></div>
+            <div class="info-item grid-col-full"><label>Alamat Domisili</label><div class="info-value" id="pi-address">-</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end page-content -->
+  </div><!-- end main-content -->
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Modal Detail Resep Pasien -->
+<div class="modal-overlay" id="modal-patient-resep">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-rx-title">Detail Resep & Aturan Obat</span>
+      <span class="modal-close" onclick="Utils.closeModal('modal-patient-resep')">✕</span>
+    </div>
+    <div class="modal-body" id="modal-rx-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('modal-patient-resep')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  // Guard role pasien
+  Auth.requireAuth('pasien');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  const currentUser = Auth.getUser();
+  const patientProfile = Auth.getPatientProfile();
+
+  // Render Header
+  document.getElementById('patient-greeting-name').textContent = currentUser.name;
+  document.getElementById('patient-greeting-info').textContent = `NIK: ${currentUser.nik || patientProfile?.nik || '-'} • Fasilitas Kesehatan Terdaftar`;
+  document.getElementById('patient-ihs-display').textContent = `IHS: ${currentUser.ihs_number || patientProfile?.ihs_number || '-'}`;
+
+  // Render Patient Info Box
+  document.getElementById('pi-full-name').textContent = patientProfile?.name || currentUser.name;
+  document.getElementById('pi-nik').textContent = patientProfile?.nik || currentUser.nik || '-';
+  document.getElementById('pi-ihs').innerHTML = `<span class="td-mono">${patientProfile?.ihs_number || currentUser.ihs_number || '-'}</span>`;
+  document.getElementById('pi-dob').textContent = patientProfile?.dob ? Utils.formatDate(patientProfile.dob) : '-';
+  document.getElementById('pi-gender').textContent = patientProfile?.gender === 'L' ? 'Laki-laki' : patientProfile?.gender === 'P' ? 'Perempuan' : '-';
+  document.getElementById('pi-address').textContent = patientProfile?.address || '-';
+
+  async function loadPatientDashboard() {
+    try {
+      const myNik = currentUser.nik || patientProfile?.nik;
+      const myIhs = currentUser.ihs_number || patientProfile?.ihs_number;
+
+      // Ambil resep pasien
+      const allPrescriptions = await API.getPrescriptions();
+      const myPrescriptions = allPrescriptions.filter(p => 
+        p.patient_nik === myNik || 
+        p.patient_ihs_number === myIhs ||
+        p.patient_name?.toLowerCase() === currentUser.name?.toLowerCase()
+      );
+
+      // Hitung stats
+      const activeRx = myPrescriptions.filter(p => p.status === 'active');
+      const completedRx = myPrescriptions.filter(p => p.status === 'completed');
+
+      document.getElementById('pstat-active').textContent = activeRx.length;
+      document.getElementById('pstat-completed').textContent = completedRx.length;
+      document.getElementById('badge-active-rx').textContent = activeRx.length;
+
+      if (myPrescriptions.length > 0 && myPrescriptions[0].payment_type) {
+        document.getElementById('pstat-payment').textContent = myPrescriptions[0].payment_type;
+      }
+
+      // Render Resep Terkini
+      const rxContainer = document.getElementById('active-prescriptions-list');
+      if (myPrescriptions.length === 0) {
+        rxContainer.innerHTML = Utils.emptyRow(1, 'Belum ada resep yang diterbitkan untuk Anda');
+      } else {
+        rxContainer.innerHTML = myPrescriptions.slice(0, 4).map(p => {
+          let statusLabel = '';
+          let statusClass = '';
+          if (p.status === 'active') {
+            statusLabel = '⏳ Sedang Disiapkan Apoteker';
+            statusClass = 'active';
+          } else if (p.status === 'completed') {
+            statusLabel = '✅ Siap Diambil / Selesai';
+            statusClass = 'done';
+          } else if (p.status === 'cancelled') {
+            statusLabel = '❌ Resep Dibatalkan';
+            statusClass = 'badge-cancelled';
+          }
+
+          return `
+            <div class="med-schedule-card">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="med-icon">💊</div>
+                <div>
+                  <div style="font-weight: 700; font-size: 14px; color: var(--gray-900);">${p.medication_name}</div>
+                  <div style="font-size: 12px; color: var(--gray-500);">
+                    No. Resep: <strong>${p.prescription_number}</strong> &bull; Oleh: ${p.requester_name}
+                  </div>
+                  <div style="margin-top: 4px;">
+                    <span class="pill-step ${statusClass}">${statusLabel}</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button class="btn btn-outline-teal btn-sm" onclick="showPatientDetail('${p.id}')">
+                  Petunjuk Minum
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render Aturan Pakai Obat
+      const guideContainer = document.getElementById('medication-instructions-list');
+      if (activeRx.length === 0) {
+        guideContainer.innerHTML = `
+          <div class="empty-state" style="padding: 20px;">
+            <p>Tidak ada obat aktif yang perlu diminum saat ini.</p>
+          </div>
+        `;
+      } else {
+        guideContainer.innerHTML = activeRx.map(p => `
+          <div style="border-left: 3px solid var(--teal-500); padding-left: 12px; margin-bottom: 16px;">
+            <div style="font-weight: 700; font-size: 14px; color: var(--teal-900);">${p.medication_name}</div>
+            <div style="font-size: 13px; color: var(--gray-700); margin: 3px 0;">
+              <strong>Aturan:</strong> ${p.dosage_value} ${p.dosage_unit} &bull; Frekuensi: <span class="tag tag-teal">${p.dosage_timing_code}</span> (${p.dosage_route?.display || 'Oral'})
+            </div>
+            ${p.dosage_additional_instruction ? `<div style="font-size: 12px; color: var(--gray-600);"><span style="color: var(--teal-700);">📌 Petunjuk Tambahan:</span> ${p.dosage_additional_instruction}</div>` : ''}
+            ${p.dosage_patient_instruction ? `<div style="font-size: 12px; color: var(--gray-600);"><span style="color: var(--teal-700);">💡 Catatan Dokter:</span> ${p.dosage_patient_instruction}</div>` : ''}
+          </div>
+        `).join('');
+      }
+
+    } catch (e) {
+      console.error(e);
+      Utils.toast('error', 'Gagal memuat data', e.message);
+    }
+  }
+
+  async function showPatientDetail(id) {
+    const p = await API.getPrescription(id);
+    if (!p) return;
+
+    let friendlyStatus = '';
+    if (p.status === 'active') friendlyStatus = '<span class="badge badge-pending">Sedang Diproses oleh Apoteker</span>';
+    else if (p.status === 'completed') friendlyStatus = '<span class="badge badge-completed">Obat Siap Diambil / Sudah Selesai</span>';
+    else friendlyStatus = '<span class="badge badge-cancelled">Dibatalkan</span>';
+
+    document.getElementById('modal-rx-body').innerHTML = `
+      <div class="alert alert-info mb-lg">
+        <span class="alert-icon">ℹ️</span>
+        <div>Resep ini resmi diterbitkan oleh <strong>${p.requester_name}</strong> dan tercatat pada platform SATUSEHAT Kemenkes RI.</div>
+      </div>
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nomor Resep</label><div class="info-value font-bold">${p.prescription_number}</div></div>
+        <div class="info-item"><label>Status Tebusan</label><div class="info-value">${friendlyStatus}</div></div>
+        <div class="info-item"><label>Tanggal Resep</label><div class="info-value">${p.authored_on_display}</div></div>
+        <div class="info-item"><label>Jenis Pembiayaan</label><div class="info-value">${Utils.paymentBadge(p.payment_type)}</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="text-uppercase-label">Detail Obat</p>
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nama Obat</label><div class="info-value text-teal-800 font-bold">${p.medication_name}</div></div>
+        <div class="info-item"><label>Bentuk Sediaan</label><div class="info-value">${p.medication_form}</div></div>
+        <div class="info-item"><label>Jumlah Diberikan</label><div class="info-value">${p.quantity} ${p.quantity_unit}</div></div>
+        <div class="info-item"><label>Perkiraan Cukup Untuk</label><div class="info-value">${p.expected_supply_days || '-'} Hari</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="text-uppercase-label">Panduan Minum Obat</p>
+      <div class="info-grid">
+        <div class="info-item"><label>Dosis</label><div class="info-value font-bold">${p.dosage_value} ${p.dosage_unit}</div></div>
+        <div class="info-item"><label>Cara Minum</label><div class="info-value">${p.dosage_route?.display || 'Diminum langsung'}</div></div>
+        <div class="info-item grid-col-full"><label>Aturan Pakai</label><div class="info-value text-teal-800 font-bold">${p.dosage_additional_instruction || 'Sesuai petunjuk dokter'}</div></div>
+        <div class="info-item grid-col-full"><label>Pesan Khusus Dokter</label><div class="info-value">${p.dosage_patient_instruction || 'Tidak ada pesan khusus.'}</div></div>
+      </div>
+    `;
+
+    Utils.openModal('modal-patient-resep');
+  }
+
+  loadPatientDashboard();
+</script>
+</body>
+</html>

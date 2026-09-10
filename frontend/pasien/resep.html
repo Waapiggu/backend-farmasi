@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resep Saya — Portal Pasien SisFarmasi SatuSehat</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    .rx-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+    .rx-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--teal-300);
+    }
+    .rx-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--gray-100);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .rx-number {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--teal-900);
+    }
+    .rx-timeline {
+      display: flex;
+      align-items: center;
+      margin: 16px 0;
+      padding: 12px 16px;
+      background: var(--gray-50);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+    }
+    .tl-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-400);
+    }
+    .tl-step.done { color: var(--teal-700); }
+    .tl-step.current { color: #B45309; }
+    .tl-dot {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--gray-200);
+      color: var(--gray-600);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+    }
+    .tl-step.done .tl-dot { background: var(--teal-500); color: white; }
+    .tl-step.current .tl-dot { background: #F59E0B; color: white; }
+    .tl-line {
+      flex: 1;
+      height: 2px;
+      background: var(--gray-200);
+      margin: 0 10px;
+      min-width: 30px;
+    }
+    .tl-line.done { background: var(--teal-500); }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon" style="background: linear-gradient(135deg, var(--teal-600), var(--teal-800));">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="logo-text"><span>Portal Pasien</span><span>SisFarmasi</span></div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar" style="background: var(--teal-100); color: var(--teal-800);">?</div>
+      <div class="user-info">
+        <span id="sidebar-user-name">Loading...</span>
+        <span id="sidebar-user-role" class="text-teal-600 font-500">Pasien</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Pasien</div>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span>
+        Beranda
+      </a>
+      <a href="resep.html" class="nav-item active" id="nav-resep">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+        Resep Saya
+      </a>
+      <a href="riwayat-obat.html" class="nav-item" id="nav-riwayat">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg></span>
+        Riwayat Obat
+      </a>
+
+      <div class="nav-section-label nav-section-label-spaced">Akses Staf</div>
+      <a href="../index.html" class="nav-item">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+        Portal Staf Rumah Sakit
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="nav-item nav-logout" onclick="Auth.logout()">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+        Keluar
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Resep & Obat Saya</h1>
+        <div class="breadcrumb">Pasien / <a href="dashboard.html">Beranda</a> / Resep Saya</div>
+      </div>
+      <div class="header-right">
+        <div class="header-time" id="live-clock"></div>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- Information Alert -->
+      <div class="alert alert-info mb-lg">
+        <span class="alert-icon">💡</span>
+        <div>Halaman ini menyajikan resep resmi dokter Anda. Status akan berubah secara otomatis saat tim Apotek sedang menyiapkan obat atau ketika obat telah siap diambil di loket farmasi.</div>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="card mb-lg">
+        <div class="toolbar">
+          <div class="search-group search-w-260">
+            <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="filter-keyword" class="form-control" placeholder="Cari nama obat / dokter..." oninput="applyFilter()"/>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Status Resep:</span>
+            <select id="filter-status" class="form-control filter-w-160" onchange="applyFilter()">
+              <option value="">Semua Resep</option>
+              <option value="active">Sedang Berjalan (Aktif)</option>
+              <option value="completed">Selesai / Diterima</option>
+              <option value="cancelled">Dibatalkan</option>
+            </select>
+          </div>
+          <div class="spacer"></div>
+          <span id="rx-count" class="text-muted-sm"></span>
+          <button class="btn btn-secondary btn-sm" onclick="loadPrescriptions()">Perbarui</button>
+        </div>
+      </div>
+
+      <!-- Prescription List Container -->
+      <div id="rx-list-container">
+        <div class="empty-state"><div class="spinner"></div><p>Memuat resep Anda...</p></div>
+      </div>
+
+    </div><!-- end page-content -->
+  </div><!-- end main-content -->
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Modal Panduan Minum Obat Lengkap -->
+<div class="modal-overlay" id="modal-rx-detail">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title">Panduan Lengkap Minum Obat</span>
+      <span class="modal-close" onclick="Utils.closeModal('modal-rx-detail')">✕</span>
+    </div>
+    <div class="modal-body" id="modal-rx-detail-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="Utils.closeModal('modal-rx-detail')">Saya Mengerti</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  Auth.requireAuth('pasien');
+  Auth.renderUserInfo();
+  Utils.startClock('live-clock');
+
+  const currentUser = Auth.getUser();
+  const patientProfile = Auth.getPatientProfile();
+  let myPrescriptions = [];
+  let filteredPrescriptions = [];
+
+  async function loadPrescriptions() {
+    try {
+      const myNik = currentUser.nik || patientProfile?.nik;
+      const myIhs = currentUser.ihs_number || patientProfile?.ihs_number;
+
+      const all = await API.getPrescriptions();
+      myPrescriptions = all.filter(p => 
+        p.patient_nik === myNik || 
+        p.patient_ihs_number === myIhs ||
+        p.patient_name?.toLowerCase() === currentUser.name?.toLowerCase()
+      );
+
+      applyFilter();
+    } catch(e) {
+      console.error(e);
+      Utils.toast('error', 'Gagal memuat', e.message);
+    }
+  }
+
+  function applyFilter() {
+    const q = document.getElementById('filter-keyword').value.trim().toLowerCase();
+    const st = document.getElementById('filter-status').value;
+
+    filteredPrescriptions = myPrescriptions.filter(p => {
+      const matchKeyword = !q || p.medication_name.toLowerCase().includes(q) || p.requester_name.toLowerCase().includes(q) || p.prescription_number.toLowerCase().includes(q);
+      const matchStatus = !st || p.status === st;
+      return matchKeyword && matchStatus;
+    });
+
+    renderList();
+  }
+
+  function renderList() {
+    const container = document.getElementById('rx-list-container');
+    document.getElementById('rx-count').textContent = `${filteredPrescriptions.length} Resep`;
+
+    if (filteredPrescriptions.length === 0) {
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-body">
+            <div class="empty-state">
+              <div class="empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <p>Tidak ada resep yang sesuai dengan pencarian Anda.</p>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filteredPrescriptions.map(p => {
+      // Hitung langkah timeline
+      let step1Done = true;
+      let step2Done = p.status === 'completed';
+      let step2Current = p.status === 'active';
+      let step3Done = p.status === 'completed';
+
+      let statusBadgeHtml = '';
+      if (p.status === 'active') {
+        statusBadgeHtml = '<span class="badge badge-pending">⏳ Sedang Diracik Apoteker</span>';
+      } else if (p.status === 'completed') {
+        statusBadgeHtml = '<span class="badge badge-completed">✅ Siap Diambil / Selesai</span>';
+      } else if (p.status === 'cancelled') {
+        statusBadgeHtml = '<span class="badge badge-cancelled">❌ Resep Dibatalkan</span>';
+      }
+
+      return `
+        <div class="rx-card">
+          <div class="rx-header">
+            <div>
+              <div class="rx-number">Resep #${p.prescription_number}</div>
+              <div class="text-muted-xs" style="margin-top: 4px;">
+                Diterbitkan pada: <strong>${p.authored_on_display}</strong> &bull; Oleh: <strong>${p.requester_name}</strong>
+              </div>
+            </div>
+            <div>${statusBadgeHtml}</div>
+          </div>
+
+          <!-- Progress Tracker -->
+          ${p.status !== 'cancelled' ? `
+            <div class="rx-timeline">
+              <div class="tl-step done">
+                <div class="tl-dot">✓</div>
+                <span>1. Resep Diterbitkan</span>
+              </div>
+              <div class="tl-line ${step2Done || step2Current ? 'done' : ''}"></div>
+              <div class="tl-step ${step2Done ? 'done' : step2Current ? 'current' : ''}">
+                <div class="tl-dot">${step2Done ? '✓' : '2'}</div>
+                <span>2. Diracik Apotek</span>
+              </div>
+              <div class="tl-line ${step3Done ? 'done' : ''}"></div>
+              <div class="tl-step ${step3Done ? 'done' : ''}">
+                <div class="tl-dot">${step3Done ? '✓' : '3'}</div>
+                <span>3. Siap Diambil</span>
+              </div>
+            </div>
+          ` : `
+            <div class="alert alert-danger mb-md">
+              <span>Alasan Pembatalan: ${p.status_reason || 'Obat diganti oleh dokter atau stok tidak mencukupi.'}</span>
+            </div>
+          `}
+
+          <div class="grid-2-col" style="margin-top: 14px; gap: 14px;">
+            <div style="background: var(--teal-50); border-radius: var(--radius-md); padding: 14px;">
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--teal-700); font-weight: 700; letter-spacing: 0.5px;">Obat Yang Diberikan</div>
+              <div style="font-size: 16px; font-weight: 700; color: var(--teal-950); margin-top: 2px;">${p.medication_name}</div>
+              <div style="font-size: 12px; color: var(--gray-600); margin-top: 2px;">
+                Sediaan: <strong>${p.medication_form}</strong> &bull; Jumlah: <strong>${p.quantity} ${p.quantity_unit}</strong>
+              </div>
+            </div>
+
+            <div style="background: #FFFBEB; border-radius: var(--radius-md); padding: 14px; border: 1px solid #FEF3C7;">
+              <div style="font-size: 11px; text-transform: uppercase; color: #92400E; font-weight: 700; letter-spacing: 0.5px;">Aturan Minum</div>
+              <div style="font-size: 14px; font-weight: 700; color: #78350F; margin-top: 2px;">
+                ${p.dosage_value} ${p.dosage_unit} (${p.dosage_timing_code})
+              </div>
+              <div style="font-size: 12px; color: #92400E; margin-top: 2px;">
+                ${p.dosage_additional_instruction || 'Sesuai anjuran dokter'}
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+            <button class="btn btn-outline-teal btn-sm" onclick="viewDetail('${p.id}')">
+              Lihat Petunjuk Lengkap &rarr;
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function viewDetail(id) {
+    const p = myPrescriptions.find(x => x.id === id);
+    if (!p) return;
+
+    document.getElementById('modal-rx-detail-body').innerHTML = `
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nomor Resep</label><div class="info-value font-bold">${p.prescription_number}</div></div>
+        <div class="info-item"><label>Dokter Pemeriksa</label><div class="info-value">${p.requester_name}</div></div>
+        <div class="info-item"><label>Tanggal Peresepan</label><div class="info-value">${p.authored_on_display}</div></div>
+        <div class="info-item"><label>Jenis Pembiayaan</label><div class="info-value">${Utils.paymentBadge(p.payment_type)}</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="text-uppercase-label">Informasi Obat & Dosis</p>
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Nama Obat</label><div class="info-value text-teal-800 font-bold">${p.medication_name}</div></div>
+        <div class="info-item"><label>Bentuk Sediaan</label><div class="info-value">${p.medication_form}</div></div>
+        <div class="info-item"><label>Jumlah Obat</label><div class="info-value">${p.quantity} ${p.quantity_unit}</div></div>
+        <div class="info-item"><label>Untuk Kebutuhan</label><div class="info-value">${p.expected_supply_days || '-'} Hari</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="text-uppercase-label">Panduan Cara Minum Obat</p>
+      <div class="info-grid mb-lg">
+        <div class="info-item"><label>Berapa Banyak Diminum?</label><div class="info-value font-bold">${p.dosage_value} ${p.dosage_unit}</div></div>
+        <div class="info-item"><label>Cara Mengonsumsi</label><div class="info-value">${p.dosage_route?.display || 'Diminum langsung'}</div></div>
+        <div class="info-item grid-col-full"><label>Waktu & Aturan</label><div class="info-value text-teal-900 font-bold">${p.dosage_additional_instruction || '-'}</div></div>
+        <div class="info-item grid-col-full"><label>Catatan Penting Dokter</label><div class="info-value">${p.dosage_patient_instruction || 'Habiskan obat sesuai petunjuk jika merupakan antibiotik.'}</div></div>
+      </div>
+    `;
+
+    Utils.openModal('modal-rx-detail');
+  }
+
+  loadPrescriptions();
+</script>
+</body>
+</html>
