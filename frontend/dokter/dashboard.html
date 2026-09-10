@@ -154,7 +154,6 @@
   // Guard
   Auth.requireAuth('dokter');
   Auth.renderUserInfo();
-  Utils.startClock('live-clock');
 
   const user = Auth.getUser();
   document.getElementById('welcome-name').textContent = user?.name || '-';

@@ -28,7 +28,6 @@
         <div class="breadcrumb">Dokter / Riwayat Resep</div>
       </div>
       <div class="header-right">
-        <div class="header-time" id="live-clock"></div>
         <a href="resep-baru.html" class="btn btn-primary btn-sm">Tulis Resep Baru</a>
       </div>
     </div>
@@ -110,7 +109,6 @@
 <script>
   Auth.requireAuth('dokter');
   Auth.renderUserInfo();
-  Utils.startClock('live-clock');
 
   let allPrescriptions = [];
   let filtered         = [];

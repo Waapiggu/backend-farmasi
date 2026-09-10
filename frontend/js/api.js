@@ -132,6 +132,28 @@ const API = (() => {
     return med;
   }
 
+  async function createMedication(data) {
+    const live = await liveFetch('POST', '/medications', data);
+    if (live) return live;
+
+    await delay(DELAY);
+    const newId = 'MED-' + String(MOCK_DATA.medications.length + 1).padStart(3, '0');
+    const record = { id: newId, ...data };
+    MOCK_DATA.medications.push(record);
+    return { pesan: "Obat berhasil ditambahkan (Mock)", data: record };
+  }
+
+  async function updateMedication(id, data) {
+    const live = await liveFetch('PUT', `/medications/${id}`, data);
+    if (live) return live;
+
+    await delay(DELAY);
+    const idx = MOCK_DATA.medications.findIndex(m => m.id === id);
+    if (idx === -1) throw new Error('Obat tidak ditemukan');
+    MOCK_DATA.medications[idx] = { ...MOCK_DATA.medications[idx], ...data };
+    return { pesan: "Obat berhasil diperbarui (Mock)", data: MOCK_DATA.medications[idx] };
+  }
+
   // ─── PATIENTS ────────────────────────────────────────
   async function getPatients() {
     const live = await liveFetch('GET', '/patients');
@@ -368,6 +390,8 @@ const API = (() => {
     register,
     getMedications, 
     getMedication, 
+    createMedication,
+    updateMedication,
     getPatients, 
     searchPatient, 
     getPrescriptions, 
