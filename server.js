@@ -784,8 +784,19 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
                 LEFT JOIN batch_obat b ON b.obat_id = o.obat_id
                 WHERE o.status = 'AKTIF'
                 GROUP BY o.obat_id
-                HAVING total_stok <= 10
+                HAVING total_stok <= 10 AND total_stok > 0
             ) AS sub_stok
+        `);
+        const [[{ stok_habis }]]      = await dbQ.query(`
+            SELECT COUNT(*) AS stok_habis FROM (
+                SELECT o.obat_id,
+                       COALESCE(SUM(CASE WHEN b.status = 'AKTIF' THEN b.jumlah_stok ELSE 0 END), 0) AS total_stok
+                FROM obat o
+                LEFT JOIN batch_obat b ON b.obat_id = o.obat_id
+                WHERE o.status = 'AKTIF'
+                GROUP BY o.obat_id
+                HAVING total_stok = 0
+            ) AS sub_stok_habis
         `);
 
         const role = req.user.role;
@@ -799,7 +810,11 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
 
         if (role === 'APOTEKER') {
             return res.status(200).json({
-                total_resep, menunggu_resep, total_dispensing, stok_rendah
+                total_resep, menunggu_resep, total_dispensing, stok_rendah,
+                out_of_stock_count: stok_habis, low_stock_count: stok_rendah,
+                total_prescriptions_today: total_resep,
+                total_dispensed_today: total_dispensing,
+                pending_queue: menunggu_resep
             });
         }
 

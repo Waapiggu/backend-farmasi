@@ -27,7 +27,8 @@
         <h1>Manajemen Stok Obat</h1>
         <div class="breadcrumb">Apoteker / Stok Obat</div>
       </div>
-      <div class="header-right"><div class="header-time" id="live-clock"></div></div>
+      <div class="header-right">
+      </div>
     </div>
 
     <div class="page-content">
@@ -50,6 +51,10 @@
           <div class="stat-card-info"><div class="stat-label">Stok Habis</div><div class="stat-value" id="s-habis">-</div></div>
           <div class="stat-icon red"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
         </div>
+      </div>
+
+      <div class="mb-lg">
+        <button class="btn btn-primary" onclick="showModalAdd()">Tambah Obat Baru</button>
       </div>
 
       <div class="card">
@@ -86,6 +91,7 @@
                 <th>Harga</th>
                 <th>Tipe</th>
                 <th>Status</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody id="tb-stok">
@@ -99,6 +105,73 @@
 </div>
 
 <div id="toast-container"></div>
+
+<!-- Modal Form Stok -->
+<div class="modal-overlay" id="modal-stok">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-stok-title">Tambah Obat Baru</span>
+      <span class="modal-close" onclick="Utils.closeModal('modal-stok')">✕</span>
+    </div>
+    <form id="form-stok" onsubmit="saveMedication(event)">
+      <div class="modal-body">
+        <input type="hidden" id="med-id" />
+        <div class="form-group">
+          <label for="med-name">Nama Obat <span class="required">*</span></label>
+          <input type="text" id="med-name" class="form-control" placeholder="Contoh: Paracetamol" required />
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="med-kfa92">Kode KFA (Resep 92)</label>
+            <input type="text" id="med-kfa92" class="form-control" placeholder="Contoh: 92000511" />
+          </div>
+          <div class="form-group">
+            <label for="med-kfa93">Kode KFA (Dispense 93)</label>
+            <input type="text" id="med-kfa93" class="form-control" placeholder="Contoh: 93002205" />
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="med-form">Bentuk Sediaan <span class="required">*</span></label>
+            <input type="text" id="med-form" class="form-control" placeholder="Contoh: Tablet" required />
+          </div>
+          <div class="form-group">
+            <label for="med-unit">Satuan (Unit) <span class="required">*</span></label>
+            <input type="text" id="med-unit" class="form-control" placeholder="Contoh: Strip" required />
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="med-stock">Stok Saat Ini <span class="required">*</span></label>
+            <input type="number" id="med-stock" class="form-control" placeholder="0" min="0" required />
+          </div>
+          <div class="form-group">
+            <label for="med-min-stock">Minimum Stok <span class="required">*</span></label>
+            <input type="number" id="med-min-stock" class="form-control" placeholder="0" min="0" required />
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="med-price">Harga <span class="required">*</span></label>
+            <input type="number" id="med-price" class="form-control" placeholder="0" min="0" required />
+          </div>
+          <div class="form-group">
+            <label for="med-lot">Nomor Lot <span class="required">*</span></label>
+            <input type="text" id="med-lot" class="form-control" placeholder="Contoh: LOT2025" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="med-exp">Tanggal Kadaluarsa (Exp Date) <span class="required">*</span></label>
+          <input type="date" id="med-exp" class="form-control" title="Tanggal Kadaluarsa" required />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="Utils.closeModal('modal-stok')">Batal</button>
+        <button type="submit" class="btn btn-primary" id="btn-save-med">Simpan Obat</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script src="../js/mock-data.js"></script>
 <script src="../js/utils.js"></script>
@@ -188,9 +261,78 @@
           <td>${Utils.formatCurrency(m.price)}</td>
           <td><span class="tag ${m.medication_type === 'formularium' ? 'tag-teal' : ''}">${m.medication_type}</span></td>
           <td>${Utils.stockBadge(m.stock, m.min_stock)}</td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="showModalEdit('${m.id}')">Edit</button>
+          </td>
         </tr>
       `;
     }).join('');
+  }
+
+  function showModalAdd() {
+    document.getElementById('form-stok').reset();
+    document.getElementById('med-id').value = '';
+    document.getElementById('modal-stok-title').textContent = 'Tambah Obat Baru';
+    Utils.openModal('modal-stok');
+  }
+
+  function showModalEdit(id) {
+    const med = allMeds.find(m => m.id === id);
+    if (!med) return;
+    document.getElementById('med-id').value = med.id;
+    document.getElementById('med-name').value = med.name || '';
+    document.getElementById('med-kfa92').value = med.kfa_code_92 || '';
+    document.getElementById('med-kfa93').value = med.kfa_code_93 || '';
+    document.getElementById('med-form').value = med.form || '';
+    document.getElementById('med-unit').value = med.unit || '';
+    document.getElementById('med-stock').value = med.stock || 0;
+    document.getElementById('med-min-stock').value = med.min_stock || 0;
+    document.getElementById('med-price').value = med.price || 0;
+    document.getElementById('med-lot').value = med.lot_number || '';
+    document.getElementById('med-exp').value = med.expiration_date ? med.expiration_date.split('T')[0] : '';
+    document.getElementById('modal-stok-title').textContent = 'Edit Obat';
+    Utils.openModal('modal-stok');
+  }
+
+  async function saveMedication(e) {
+    e.preventDefault();
+    const id = document.getElementById('med-id').value;
+    const data = {
+      name: document.getElementById('med-name').value,
+      generic_name: document.getElementById('med-name').value, // Simplify
+      kfa_code_92: document.getElementById('med-kfa92').value,
+      kfa_code_93: document.getElementById('med-kfa93').value,
+      form: document.getElementById('med-form').value,
+      unit: document.getElementById('med-unit').value,
+      stock: parseInt(document.getElementById('med-stock').value),
+      min_stock: parseInt(document.getElementById('med-min-stock').value),
+      price: parseInt(document.getElementById('med-price').value),
+      lot_number: document.getElementById('med-lot').value,
+      expiration_date: document.getElementById('med-exp').value,
+      medication_type: 'umum',
+      manufacturer: 'Apotek Internal'
+    };
+
+    const btn = document.getElementById('btn-save-med');
+    btn.disabled = true;
+    btn.textContent = 'Menyimpan...';
+
+    try {
+      if (id) {
+        await API.updateMedication(id, data);
+        Utils.toast('success', 'Berhasil', 'Stok obat berhasil diperbarui');
+      } else {
+        await API.createMedication(data);
+        Utils.toast('success', 'Berhasil', 'Obat baru berhasil ditambahkan');
+      }
+      Utils.closeModal('modal-stok');
+      loadStok();
+    } catch (err) {
+      Utils.toast('error', 'Gagal menyimpan', err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Simpan Obat';
+    }
   }
 
   loadStok();

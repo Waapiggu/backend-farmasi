@@ -58,28 +58,6 @@
       <p class="form-title">Selamat Datang</p>
       <p class="form-subtitle">Masuk ke sistem menggunakan akun Anda</p>
 
-      <!-- Role Selector -->
-      <div class="form-group">
-        <label>Masuk Sebagai Staf</label>
-        <div class="role-selector grid-3-cols">
-          <div class="role-option selected" data-role="dokter" onclick="selectRole('dokter', this)">
-            <div class="role-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-            <div class="role-name">Dokter</div>
-            <div class="role-desc">Tulis resep</div>
-          </div>
-          <div class="role-option" data-role="apoteker" onclick="selectRole('apoteker', this)">
-            <div class="role-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg></div>
-            <div class="role-name">Apoteker</div>
-            <div class="role-desc">Proses dispense</div>
-          </div>
-          <div class="role-option" data-role="admin" onclick="selectRole('admin', this)">
-            <div class="role-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-            <div class="role-name">Admin</div>
-            <div class="role-desc">Monitoring & Data</div>
-          </div>
-        </div>
-      </div>
-
       <!-- Switch to Patient Portal -->
       <div class="patient-portal-banner">
         <div class="flex-center-gap-10">
@@ -109,9 +87,9 @@
           <div class="w-100">
             <strong>Akun Demo Staf (Klik untuk mengisi):</strong><br/>
             <div class="demo-buttons-container">
-              <button type="button" class="btn btn-secondary btn-sm btn-demo-sm" onclick="fillDemo('dokter@farmasi.id', 'dokter123', 'dokter')">🩺 Dokter</button>
-              <button type="button" class="btn btn-secondary btn-sm btn-demo-sm" onclick="fillDemo('apoteker@farmasi.id', 'apoteker123', 'apoteker')">💊 Apoteker</button>
-              <button type="button" class="btn btn-secondary btn-sm btn-demo-sm" onclick="fillDemo('admin@farmasi.id', 'admin123', 'admin')">🛡️ Admin</button>
+              <button type="button" class="btn btn-secondary btn-sm btn-demo-sm" onclick="fillDemo('dokter@farmasi.id', 'dokter123')">🩺 Dokter</button>
+              <button type="button" class="btn btn-secondary btn-sm btn-demo-sm" onclick="fillDemo('apoteker@farmasi.id', 'apoteker123')">💊 Apoteker</button>
+              <button type="button" class="btn btn-secondary btn-sm btn-demo-sm" onclick="fillDemo('admin@farmasi.id', 'admin123')">🛡️ Admin</button>
             </div>
           </div>
         </div>
@@ -138,8 +116,6 @@
 <script src="js/api.js"></script>
 <script src="js/satusehat.js"></script>
 <script>
-  let selectedRole = 'dokter';
-
   // Redirect jika sudah login
   if (Auth.isLoggedIn()) {
     const role = Auth.getRole();
@@ -149,25 +125,7 @@
     else if (role === 'pasien') window.location.href = 'pasien/dashboard.html';
   }
 
-  function selectRole(role, el) {
-    selectedRole = role;
-    document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
-    el.classList.add('selected');
-    if (role === 'dokter') {
-      document.getElementById('email').value = 'dokter@farmasi.id';
-      document.getElementById('password').value = 'dokter123';
-    } else if (role === 'apoteker') {
-      document.getElementById('email').value = 'apoteker@farmasi.id';
-      document.getElementById('password').value = 'apoteker123';
-    } else if (role === 'admin') {
-      document.getElementById('email').value = 'admin@farmasi.id';
-      document.getElementById('password').value = 'admin123';
-    }
-  }
-
-  function fillDemo(email, pass, role) {
-    const targetOption = document.querySelector(`.role-option[data-role="${role}"]`);
-    if (targetOption) selectRole(role, targetOption);
+  function fillDemo(email, pass) {
     document.getElementById('email').value = email;
     document.getElementById('password').value = pass;
   }
@@ -183,7 +141,7 @@
     btnText.innerHTML = '<span class="spinner spinner-sm"></span> Memverifikasi...';
 
     try {
-      const res = await API.login(email, password, selectedRole);
+      const res = await API.login(email, password);
       Auth.login(res.user, res.token);
       Utils.toast('success', 'Login Berhasil', `Selamat datang, ${res.user.name}`);
       setTimeout(() => {

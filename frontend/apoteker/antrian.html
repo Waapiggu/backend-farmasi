@@ -28,8 +28,6 @@
         <div class="breadcrumb">Apoteker / Antrian Resep</div>
       </div>
       <div class="header-right">
-        <span id="last-refresh" class="text-muted-xs">Auto-refresh: 30 detik</span>
-        <div class="header-time" id="live-clock"></div>
       </div>
     </div>
 
@@ -99,7 +97,6 @@
 <script>
   Auth.requireAuth('apoteker');
   Auth.renderUserInfo();
-  Utils.startClock('live-clock');
 
   let allAntrian = [];
   let filtered   = [];
@@ -109,7 +106,6 @@
       allAntrian = await API.getPrescriptions({ status: 'active' });
       filtered   = [...allAntrian];
       document.getElementById('badge-antrian').textContent = allAntrian.length;
-      document.getElementById('last-refresh').textContent = 'Diperbarui: ' + Utils.formatTime(new Date().toISOString());
       render();
     } catch(e) { Utils.toast('error', 'Gagal memuat', e.message); }
   }

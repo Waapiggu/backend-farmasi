@@ -43,7 +43,6 @@
         <div class="breadcrumb">Dokter / <a href="dashboard.html">Dashboard</a> / Tulis Resep</div>
       </div>
       <div class="header-right">
-        <div class="header-time" id="live-clock"></div>
       </div>
     </div>
 
@@ -261,7 +260,6 @@
 <script>
   Auth.requireAuth('dokter');
   Auth.renderUserInfo();
-  Utils.startClock('live-clock');
 
   let selectedMedication = null;
   let foundPatient       = null;
