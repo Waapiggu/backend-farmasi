@@ -12,14 +12,44 @@ const MOCK_DATA = {
   // ─── USERS ─────────────────────────────────────────────
   users: [
     {
+      id: 'USR-ADM', email: 'admin@farmasi.id', password: 'admin123',
+      name: 'Administrator Farmasi', role: 'admin',
+      phone: '081122334455'
+    },
+    {
       id: 'USR-001', email: 'dokter@farmasi.id', password: 'dokter123',
       name: 'dr. Ahmad Fauzi, Sp.PD', role: 'dokter',
       npa: '1234567', phone: '081234567890'
     },
     {
+      id: 'USR-003', email: 'sinta@farmasi.id', password: 'dokter123',
+      name: 'dr. Sinta Maharani, Sp.A', role: 'dokter',
+      npa: '7654321', phone: '081298765432'
+    },
+    {
       id: 'USR-002', email: 'apoteker@farmasi.id', password: 'apoteker123',
       name: 'apt. Siti Nurhaliza, S.Farm.', role: 'apoteker',
       sipa: 'SIPA-001/2024', phone: '089876543210'
+    },
+    {
+      id: 'USR-004', email: 'dimas@farmasi.id', password: 'apoteker123',
+      name: 'apt. Dimas Anggara, S.Farm.', role: 'apoteker',
+      sipa: 'SIPA-002/2024', phone: '089812345678'
+    },
+    {
+      id: 'USR-PAT-001', email: 'budi@pasien.id', password: 'pasien123',
+      name: 'Budi Santoso', role: 'pasien',
+      nik: '3201234567890001', ihs_number: 'P02478375304', phone: '081311112222'
+    },
+    {
+      id: 'USR-PAT-002', email: 'siti@pasien.id', password: 'pasien123',
+      name: 'Siti Rahayu', role: 'pasien',
+      nik: '3201234567890002', ihs_number: 'P02478375305', phone: '081333334444'
+    },
+    {
+      id: 'USR-PAT-003', email: 'andi@pasien.id', password: 'pasien123',
+      name: 'Rizky Pratama', role: 'pasien',
+      nik: '3201234567890005', ihs_number: 'P02478375308', phone: '081355556666'
     }
   ],
 
@@ -140,6 +170,24 @@ const MOCK_DATA = {
       expiration_date: '2027-01-15',
       medication_type: 'non-formularium',
       price: 35000,
+      min_stock: 20
+    },
+    {
+      id: 'MED-007',
+      kfa_code_92: 'KFA_CODE_DUMMY_001', // POV DUMMY
+      kfa_code_93: 'KFA_CODE_DUMMY_001_POA', // POA DUMMY
+      kfa_system: 'http://sys-ids.kemkes.go.id/kfa/dummy',
+      name: 'Cetirizine HCl 10mg Tablet (KFA Dummy)',
+      generic_name: 'Cetirizine Hydrochloride',
+      ingredient_code: '91000999',
+      form: 'Tablet',
+      manufacturer: 'Generik Farmasi RI',
+      stock: 95,
+      unit: 'Strip (10 tablet)',
+      lot_number: 'LOT2026DUMMY',
+      expiration_date: '2028-12-31',
+      medication_type: 'formularium',
+      price: 6000,
       min_stock: 20
     }
   ],
@@ -435,8 +483,27 @@ const MOCK_DATA = {
       low_stock_count: 2,
       out_of_stock_count: 1,
       last_updated: '2026-09-09T12:30:00+07:00'
+    },
+    admin: {
+      total_patients: 5,
+      total_doctors: 2,
+      total_pharmacists: 2,
+      total_prescriptions: 5,
+      pending_prescriptions: 3,
+      dispensed_prescriptions: 1,
+      cancelled_prescriptions: 1,
+      satusehat_sync_rate: '98.5%',
+      last_updated: '2026-09-09T12:30:00+07:00'
     }
   },
+
+  // ─── SYSTEM ACTIVITIES ────────────────────────────────
+  system_activities: [
+    { id: 'ACT-001', time: '2026-09-09T05:45:00+00:00', time_display: '09 Sep 2026, 12:45 WIB', actor: 'dr. Ahmad Fauzi, Sp.PD', role: 'dokter', action: 'CREATE_PRESCRIPTION', description: 'Menerbitkan resep RX-2026-0004 untuk Dewi Kusuma (Amoxicillin 500mg)', type: 'info' },
+    { id: 'ACT-002', time: '2026-09-08T06:30:00+00:00', time_display: '08 Sep 2026, 13:30 WIB', actor: 'apt. Siti Nurhaliza, S.Farm.', role: 'apoteker', action: 'DISPENSE_MEDICATION', description: 'Menyerahkan obat Paracetamol 120mg/5mL untuk Siti Rahayu (MD-001)', type: 'success' },
+    { id: 'ACT-003', time: '2026-09-07T05:05:00+00:00', time_display: '07 Sep 2026, 12:05 WIB', actor: 'dr. Ahmad Fauzi, Sp.PD', role: 'dokter', action: 'CANCEL_PRESCRIPTION', description: 'Membatalkan resep RX-2026-0003 Hendra Wijaya (Stok habis)', type: 'warning' },
+    { id: 'ACT-004', time: '2026-09-07T05:00:00+00:00', time_display: '07 Sep 2026, 12:00 WIB', actor: 'SATUSEHAT Sandbox', role: 'system', action: 'SYNC_SATUSEHAT', description: 'Sinkronisasi 4 resource MedicationRequest & 1 MedicationDispense berhasil', type: 'info' }
+  ],
 
   // ─── LOOKUP DATA ──────────────────────────────────────
   dosage_routes: [
