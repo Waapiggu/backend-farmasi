@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const path = require('path');
 
 const {
     syncPatientToSatuSehat,
@@ -12,6 +13,9 @@ const {
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Melayani file frontend (HTML, CSS, JS) secara langsung
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 // 1. KONEKSI KE KULKAS (DATABASE MySQL)
 let isDbConnected = false;
