@@ -1394,10 +1394,63 @@ label .required {
 
 .bg-gradient-signup { background: linear-gradient(135deg, var(--teal-700), var(--teal-900)) !important; }
 .brand-logo-signup { background: white !important; color: var(--teal-700) !important; }
+
+.form-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 16px;
+}
+
+/* Staff Role Selector inside Login */
+.staff-role-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.staff-role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  border: 1.5px solid var(--gray-200);
+  background: white;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.staff-role-card:hover {
+  border-color: var(--teal-400);
+  background: var(--teal-50);
+}
+.staff-role-card.active {
+  border-color: var(--teal-600);
+  background: var(--teal-50);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
+}
+.staff-role-card .role-card-icon {
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+.staff-role-card .role-card-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+.staff-role-card.active .role-card-name {
+  color: var(--teal-800);
+}
+
+.portal-view {
+  animation: fadeInPortal 0.25s ease-in-out;
+}
+
+@keyframes fadeInPortal {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Two-column dashboard grid */
