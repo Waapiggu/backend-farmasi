@@ -9,6 +9,9 @@
 
 const MOCK_DATA = {
 
+  // ─── REKAM MEDIS ───────────────────────────────────────
+  rekam_medis: [],
+
   // ─── USERS ─────────────────────────────────────────────
   users: [
     {
@@ -19,12 +22,12 @@ const MOCK_DATA = {
     {
       id: 'USR-001', email: 'dokter@farmasi.id', password: 'dokter123',
       name: 'dr. Ahmad Fauzi, Sp.PD', role: 'dokter',
-      npa: '1234567', phone: '081234567890'
+      npa: '1234567', phone: '081234567890', specialty: 'Penyakit Dalam'
     },
     {
       id: 'USR-003', email: 'sinta@farmasi.id', password: 'dokter123',
       name: 'dr. Sinta Maharani, Sp.A', role: 'dokter',
-      npa: '7654321', phone: '081298765432'
+      npa: '7654321', phone: '081298765432', specialty: 'Anak'
     },
     {
       id: 'USR-002', email: 'apoteker@farmasi.id', password: 'apoteker123',
@@ -522,6 +525,40 @@ const MOCK_DATA = {
     { id: 'ACT-003', time: '2026-09-07T05:05:00+00:00', time_display: '07 Sep 2026, 12:05 WIB', actor: 'dr. Ahmad Fauzi, Sp.PD', role: 'dokter', action: 'CANCEL_PRESCRIPTION', description: 'Membatalkan resep RX-2026-0003 Hendra Wijaya (Stok habis)', type: 'warning' },
     { id: 'ACT-004', time: '2026-09-07T05:00:00+00:00', time_display: '07 Sep 2026, 12:00 WIB', actor: 'SATUSEHAT Sandbox', role: 'system', action: 'SYNC_SATUSEHAT', description: 'Sinkronisasi 4 resource MedicationRequest & 1 MedicationDispense berhasil', type: 'info' }
   ],
+
+  // ─── ANTRIAN (Patient Queue) ──────────────────────────
+  antrian: [
+    {
+      kunjungan_id: 'VISIT-2026-001',
+      dokter_id: 'USR-001',
+      patient_nik: '3201234567890001',
+      patient_name: 'Budi Santoso',
+      status: 'menunggu', // menunggu, diperiksa, selesai, batal
+      waktu_daftar: '2026-09-11T08:00:00+07:00'
+    },
+    {
+      kunjungan_id: 'VISIT-2026-002',
+      dokter_id: 'USR-001',
+      patient_nik: '3201234567890002',
+      patient_name: 'Siti Rahayu',
+      status: 'menunggu',
+      waktu_daftar: '2026-09-11T08:30:00+07:00'
+    }
+  ],
+
+  // ─── REKAM MEDIS (Medical Records) ────────────────────
+  rekam_medis: [
+    {
+      rekam_medis_id: 'RM-2026-001',
+      kunjungan_id: 'VISIT-2026-000', // Selesai kemarin
+      patient_nik: '3201234567890001',
+      keluhan: 'Demam dan sakit tenggorokan',
+      hasil_pemeriksaan: 'Faring hiperemis, suhu 38.5C',
+      catatan: 'Suspect faringitis akut',
+      tanggal_pencatatan: '2026-09-10T10:00:00+07:00'
+    }
+  ],
+
 
   // ─── LOOKUP DATA ──────────────────────────────────────
   dosage_routes: [

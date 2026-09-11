@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Pasien — SisFarmasi</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body><div class="app-layout">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></div>
+      <div class="logo-text"><span>SisFarmasi</span><span>SatuSehat</span></div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar">?</div>
+      <div class="user-info">
+        <span id="sidebar-user-name">Loading...</span>
+        <span id="sidebar-user-role">Dokter</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="dashboard.html"      class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="15" width="7" height="6"/></svg></span> Dashboard</a>
+      <a href="daftar-pasien.html"  class="nav-item active"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Daftar Pasien</a>
+      <a href="riwayat-pasien.html" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span> Riwayat Pasien</a>
+      <a href="resep-baru.html"     class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span> Tulis Resep Baru</a>
+      <a href="riwayat-resep.html"  class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Riwayat Resep</a>
+      <div class="nav-section-label nav-section-label-spaced">Referensi</div>
+      <a href="stok.html" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Stok Obat</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="nav-item nav-logout" onclick="Auth.logout()"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Keluar</div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="top-header">
+      <div class="header-left">
+        <h1>Daftar Pasien</h1>
+        <div class="breadcrumb">Dokter / Daftar Pasien</div>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="card">
+        <!-- Toolbar / Filter -->
+        <div class="toolbar">
+          <div class="search-group search-w-260">
+            <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="search-input" class="form-control" placeholder="Cari berdasarkan nama atau NIK..." oninput="applyFilter()"/>
+          </div>
+          <div class="spacer"></div>
+          <span id="result-count" class="text-muted-sm"></span>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>No. Antrian</th>
+                <th>Nama Pasien</th>
+                <th>NIK</th>
+                <th>Waktu Daftar</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tb-antrian-pasien">
+              <tr><td colspan="6"><div class="empty-state"><div class="spinner"></div><p>Memuat data...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="../js/mock-data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/api.js"></script>
+<script>
+  Auth.requireAuth('dokter');
+  Auth.renderUserInfo();
+
+  let allAntrian = [];
+  let filtered   = [];
+  const user = Auth.getUser();
+
+  async function loadAntrian() {
+    try {
+      allAntrian = await API.getAntrian(user?.id);
+      
+      // Sort: status 'menunggu' at the top, then by time
+      allAntrian.sort((a, b) => {
+        if (a.status === 'menunggu' && b.status !== 'menunggu') return -1;
+        if (a.status !== 'menunggu' && b.status === 'menunggu') return 1;
+        return new Date(a.waktu_daftar) - new Date(b.waktu_daftar);
+      });
+
+      filtered = [...allAntrian];
+      render();
+    } catch(e) { 
+      Utils.toast('error', 'Gagal memuat', e.message); 
+    }
+  }
+
+  function applyFilter() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    filtered = allAntrian.filter(p => {
+      return !q || 
+             p.patient_name.toLowerCase().includes(q) || 
+             p.patient_nik.toLowerCase().includes(q) || 
+             p.kunjungan_id.toLowerCase().includes(q);
+    });
+    render();
+  }
+
+  function render() {
+    const tb = document.getElementById('tb-antrian-pasien');
+    document.getElementById('result-count').textContent = `${filtered.length} pasien ditemukan`;
+
+    if (!filtered.length) { 
+      tb.innerHTML = Utils.emptyRow(6, 'Tidak ada pasien yang sesuai filter'); 
+      return; 
+    }
+
+    tb.innerHTML = filtered.map(a => `
+      <tr>
+        <td><div class="td-main">${a.kunjungan_id}</div></td>
+        <td><div class="td-main">${a.patient_name}</div></td>
+        <td><div class="td-sub">${a.patient_nik}</div></td>
+        <td>${Utils.formatDateTime(a.waktu_daftar)}</td>
+        <td>${Utils.statusBadge(a.status === 'menunggu' ? 'active' : a.status === 'selesai' ? 'completed' : 'cancelled')}</td>
+        <td>
+          ${a.status === 'menunggu' 
+            ? `<button class="btn btn-primary btn-sm" onclick="periksaPasien('${a.kunjungan_id}', '${a.patient_nik}', '${a.patient_name}')">Periksa Pasien</button>` 
+            : `<span class="text-muted-sm">Selesai</span>`}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function periksaPasien(kunjunganId, nik, nama) {
+    window.location.href = `rekam-medis.html?kunjungan=${kunjunganId}&nik=${nik}&nama=${encodeURIComponent(nama)}`;
+  }
+
+  loadAntrian();
+</script>
+</body>
+</html>

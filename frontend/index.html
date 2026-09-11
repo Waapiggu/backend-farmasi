@@ -13,43 +13,10 @@
   <!-- Left Panel: Branding -->
   <div class="login-left">
     <div class="login-brand">
-      <div class="brand-logo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
-      </div>
       <h1>SisFarmasi</h1>
-      <p>Sistem Manajemen Pelayanan Kefarmasian terintegrasi dengan SATUSEHAT Platform Kemenkes RI</p>
+      <p>Sistem Manajemen Pelayanan Kefarmasian terintegrasi dengan SATUSEHAT Platform Kemenkes&nbsp;RI</p>
     </div>
 
-    <div class="login-features">
-      <div class="login-feature">
-        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-        <div class="feat-text">
-          <span>Peresepan Digital</span>
-          <span>Resep elektronik berbasis FHIR MedicationRequest</span>
-        </div>
-      </div>
-      <div class="login-feature">
-        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg></div>
-        <div class="feat-text">
-          <span>Dispense Obat</span>
-          <span>Pengeluaran obat sesuai standar MedicationDispense</span>
-        </div>
-      </div>
-      <div class="login-feature">
-        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg></div>
-        <div class="feat-text">
-          <span>Kode KFA Kemenkes</span>
-          <span>Integrasi Kamus Farmasi & Alat Kesehatan resmi</span>
-        </div>
-      </div>
-      <div class="login-feature">
-        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
-        <div class="feat-text">
-          <span>Sync SatuSehat</span>
-          <span>Sinkronisasi data otomatis ke SATUSEHAT Platform</span>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Right Panel: Login Form -->
@@ -123,7 +90,7 @@
       <!-- ============================================== -->
       <!-- VIEW 2: PORTAL STAF (MUNCUL KETIKA KLIK STAF)  -->
       <!-- ============================================== -->
-      <div id="view-staf" class="portal-view" style="display: none;">
+      <div id="view-staf" class="portal-view">
         <p class="form-title">Portal Staf Medis</p>
         <p class="form-subtitle">Pilih peran dan masuk menggunakan kredensial staf</p>
 
@@ -143,24 +110,7 @@
           </button>
         </div>
 
-        <!-- Role Selector for Staff: Dokter, Apoteker, Admin -->
-        <div class="form-group">
-          <label style="font-weight: 600; font-size: 12px; margin-bottom: 6px; display: block;">Pilih Peran Staf <span class="required">*</span></label>
-          <div class="staff-role-selector">
-            <button type="button" class="staff-role-card active" id="role-card-dokter" onclick="selectStaffRole('dokter')">
-              <span class="role-card-icon">🩺</span>
-              <span class="role-card-name">Dokter</span>
-            </button>
-            <button type="button" class="staff-role-card" id="role-card-apoteker" onclick="selectStaffRole('apoteker')">
-              <span class="role-card-icon">💊</span>
-              <span class="role-card-name">Apoteker</span>
-            </button>
-            <button type="button" class="staff-role-card" id="role-card-admin" onclick="selectStaffRole('admin')">
-              <span class="role-card-icon">🛡️</span>
-              <span class="role-card-name">Admin</span>
-            </button>
-          </div>
-        </div>
+
 
         <!-- Form Login Staf -->
         <form id="staf-login-form" onsubmit="handleStaffLogin(event)">
@@ -186,7 +136,7 @@
           </div>
 
           <button type="submit" class="btn btn-primary btn-login btn-lg" id="btn-staf-login">
-            <span id="btn-staf-login-text">Masuk sebagai Dokter</span>
+            <span id="btn-staf-login-text">Masuk ke Portal Staf</span>
           </button>
         </form>
 
@@ -208,10 +158,7 @@
 <script src="js/auth.js"></script>
 <script src="js/api.js"></script>
 <script src="js/satusehat.js"></script>
-<script>
-  let selectedStaffRole = 'dokter';
-
-  // Redirect jika sudah login
+<script>  // Redirect jika sudah login
   if (Auth.isLoggedIn()) {
     const role = Auth.getRole();
     if (role === 'dokter') window.location.href = 'dokter/dashboard.html';
@@ -236,30 +183,6 @@
     }
   }
 
-  // Pilih role staf (Dokter, Apoteker, Admin)
-  function selectStaffRole(role) {
-    selectedStaffRole = role;
-
-    document.querySelectorAll('.staff-role-card').forEach(c => c.classList.remove('active'));
-    const targetCard = document.getElementById(`role-card-${role}`);
-    if (targetCard) targetCard.classList.add('active');
-
-    const btnText = document.getElementById('btn-staf-login-text');
-    if (role === 'dokter') {
-      btnText.textContent = 'Masuk sebagai Dokter';
-      document.getElementById('staf-email').value = 'dokter@farmasi.id';
-      document.getElementById('staf-password').value = 'dokter123';
-    } else if (role === 'apoteker') {
-      btnText.textContent = 'Masuk sebagai Apoteker';
-      document.getElementById('staf-email').value = 'apoteker@farmasi.id';
-      document.getElementById('staf-password').value = 'apoteker123';
-    } else if (role === 'admin') {
-      btnText.textContent = 'Masuk sebagai Admin';
-      document.getElementById('staf-email').value = 'admin@farmasi.id';
-      document.getElementById('staf-password').value = 'admin123';
-    }
-  }
-
   // Pengisian Demo Pasien
   function fillPasienDemo(identifier, pass) {
     document.getElementById('pasien-identifier').value = identifier;
@@ -267,8 +190,7 @@
   }
 
   // Pengisian Demo Staf
-  function fillStaffDemo(email, pass, role) {
-    selectStaffRole(role);
+  function fillStaffDemo(email, pass) {
     document.getElementById('staf-email').value    = email;
     document.getElementById('staf-password').value = pass;
   }
@@ -310,9 +232,9 @@
     btnText.innerHTML = '<span class="spinner spinner-sm"></span> Memverifikasi staf...';
 
     try {
-      const res = await API.login(email, password, selectedStaffRole);
+      const res = await API.login(email, password, '');
       Auth.login(res.user, res.token);
-      Utils.toast('success', 'Login Berhasil', `Selamat datang, ${res.user.name || selectedStaffRole}`);
+      Utils.toast('success', 'Login Berhasil', `Selamat datang, ${res.user.name}`);
       setTimeout(() => {
         if (res.user.role === 'dokter') window.location.href = 'dokter/dashboard.html';
         else if (res.user.role === 'apoteker') window.location.href = 'apoteker/dashboard.html';
@@ -322,7 +244,7 @@
     } catch (err) {
       Utils.toast('error', 'Login Gagal', err.message || 'Email atau password staf salah.');
       btn.disabled = false;
-      btnText.textContent = `Masuk sebagai ${selectedStaffRole.charAt(0).toUpperCase() + selectedStaffRole.slice(1)}`;
+      btnText.textContent = 'Masuk ke Portal Staf';
     }
   }
 

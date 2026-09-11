@@ -84,7 +84,10 @@ const API = (() => {
       phone: data.phone
     };
     
-    if (data.role === 'dokter') newUser.npa = data.npa;
+    if (data.role === 'dokter') {
+      newUser.npa = data.npa;
+      newUser.specialty = data.specialty;
+    }
     if (data.role === 'apoteker') newUser.sipa = data.sipa;
     if (data.role === 'pasien') {
       newUser.nik = data.nik;
@@ -186,7 +189,8 @@ const API = (() => {
     if (live) return live;
 
     await delay(DELAY);
-    let data = [...MOCK_DATA.prescriptions];
+    const localData = JSON.parse(localStorage.getItem('mock_prescriptions') || '[]');
+    let data = [...localData, ...MOCK_DATA.prescriptions];
     if (status) data = data.filter(p => p.status === status);
     if (doctor_id) data = data.filter(p => p.requester_id === doctor_id);
     if (patient_nik) data = data.filter(p => p.patient_nik === patient_nik);
@@ -199,7 +203,8 @@ const API = (() => {
     if (live) return live;
 
     await delay(DELAY);
-    const p = MOCK_DATA.prescriptions.find(x => x.id === id);
+    const localData = JSON.parse(localStorage.getItem('mock_prescriptions') || '[]');
+    const p = [...localData, ...MOCK_DATA.prescriptions].find(x => x.id === id);
     if (!p) throw new Error('Resep tidak ditemukan');
     return p;
   }
@@ -209,7 +214,8 @@ const API = (() => {
     if (live) return live;
 
     await delay(DELAY);
-    return MOCK_DATA.prescriptions.filter(p => 
+    const localData = JSON.parse(localStorage.getItem('mock_prescriptions') || '[]');
+    return [...localData, ...MOCK_DATA.prescriptions].filter(p => 
       p.patient_nik === patientNikOrIhs || p.patient_ihs_number === patientNikOrIhs
     );
   }
@@ -233,18 +239,21 @@ const API = (() => {
 
     // Fallback Mock
     await delay(DELAY);
-    const newId = 'MR-' + String(MOCK_DATA.prescriptions.length + 1).padStart(3, '0');
-    const num   = 'RX-2026-' + String(MOCK_DATA.prescriptions.length + 1).padStart(4, '0');
+    const localData = JSON.parse(localStorage.getItem('mock_prescriptions') || '[]');
+    const newId = 'MR-' + String(MOCK_DATA.prescriptions.length + localData.length + 1).padStart(3, '0');
+    const num   = 'RX-2026-' + String(MOCK_DATA.prescriptions.length + localData.length + 1).padStart(4, '0');
     const record = {
       id: newId,
       prescription_number: num,
-      prescription_item_number: 'RXI-2026-' + String(MOCK_DATA.prescriptions.length + 1).padStart(4, '0'),
+      prescription_item_number: 'RXI-2026-' + String(MOCK_DATA.prescriptions.length + localData.length + 1).padStart(4, '0'),
       status: 'active',
       authored_on: Utils.nowUTC(),
       authored_on_display: Utils.formatDateTime(new Date().toISOString()),
       ...data
     };
-    MOCK_DATA.prescriptions.unshift(record);
+    
+    localData.unshift(record);
+    localStorage.setItem('mock_prescriptions', JSON.stringify(localData));
 
     if (MOCK_DATA.system_activities) {
       MOCK_DATA.system_activities.unshift({
@@ -271,11 +280,25 @@ const API = (() => {
     if (live) return live;
 
     await delay(DELAY);
-    const p = MOCK_DATA.prescriptions.find(x => x.id === id);
+    
+    // Check localData first
+    const localData = JSON.parse(localStorage.getItem('mock_prescriptions') || '[]');
+    let p = localData.find(x => x.id === id);
+    let isLocal = !!p;
+    
+    if (!p) {
+      p = MOCK_DATA.prescriptions.find(x => x.id === id);
+    }
+    
     if (!p) throw new Error('Resep tidak ditemukan');
     if (p.status !== 'active') throw new Error('Hanya resep aktif yang dapat dibatalkan');
+    
     p.status = 'cancelled';
     p.status_reason = reason;
+    
+    if (isLocal) {
+      localStorage.setItem('mock_prescriptions', JSON.stringify(localData));
+    }
 
     if (MOCK_DATA.system_activities) {
       MOCK_DATA.system_activities.unshift({
@@ -384,6 +407,59 @@ const API = (() => {
     return [...(MOCK_DATA.system_activities || [])];
   }
 
+  // ─── ANTRIAN & REKAM MEDIS (DOKTER) ──────────────────
+  async function getAntrian(dokter_id) {
+    const live = await liveFetch('GET', `/antrian?dokter_id=${dokter_id}`);
+    if (live) return live;
+
+    await delay(DELAY);
+    let data = [...(MOCK_DATA.antrian || [])];
+    if (dokter_id) data = data.filter(a => a.dokter_id === dokter_id);
+    return data;
+  }
+
+  async function getRekamMedis(kunjungan_id) {
+    const live = await liveFetch('GET', `/rekam-medis/${kunjungan_id}`);
+    if (live) return live;
+
+    await delay(DELAY);
+    const localData = JSON.parse(localStorage.getItem('mock_rekam_medis') || '[]');
+    const allRm = [...(MOCK_DATA.rekam_medis || []), ...localData];
+    return allRm.find(r => r.kunjungan_id === kunjungan_id) || null;
+  }
+
+  async function createRekamMedis(data) {
+    const live = await liveFetch('POST', '/rekam-medis', data);
+    if (live) return live;
+
+    await delay(DELAY);
+    const localData = JSON.parse(localStorage.getItem('mock_rekam_medis') || '[]');
+    const newId = 'RM-' + String((MOCK_DATA.rekam_medis || []).length + localData.length + 1).padStart(3, '0');
+    const record = {
+      rekam_medis_id: newId,
+      tanggal_pencatatan: Utils.nowUTC(), // Atau new Date().toISOString()
+      ...data
+    };
+    
+    localData.unshift(record);
+    localStorage.setItem('mock_rekam_medis', JSON.stringify(localData));
+
+    // Update status antrian menjadi selesai
+    const visit = MOCK_DATA.antrian?.find(a => a.kunjungan_id === data.kunjungan_id);
+    if (visit) visit.status = 'selesai';
+
+    return { success: true, data: record, message: 'Rekam medis berhasil disimpan' };
+  }
+
+  async function getAllRekamMedis() {
+    const live = await liveFetch('GET', `/rekam-medis`);
+    if (live) return live;
+
+    await delay(DELAY);
+    const localData = JSON.parse(localStorage.getItem('mock_rekam_medis') || '[]');
+    return [...localData, ...(MOCK_DATA.rekam_medis || [])];
+  }
+
   // Public API
   return { 
     login, 
@@ -404,6 +480,10 @@ const API = (() => {
     createDispense, 
     getDashboardStats,
     getAllUsers,
-    getSystemActivities
+    getSystemActivities,
+    getAntrian,
+    getRekamMedis,
+    getAllRekamMedis,
+    createRekamMedis
   };
 })();
